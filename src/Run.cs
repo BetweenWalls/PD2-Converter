@@ -21,10 +21,10 @@ namespace D2SLib
         public static bool writeConsole_D2SRead = false;
         public static bool writeConsole_ItemsRead = false;
         public static bool writeConsole_ItemsReadComplete = false;
-        public static bool recognized = true;
         public static bool vanilla = true;
-        public static string version = "vanilla";
+        public static bool force = false;
         public static byte[] space = new byte[000];
+        public static string convert_from = "vanilla";
         public static string convert_to = "pd2";
     }
     class Run
@@ -55,6 +55,19 @@ namespace D2SLib
             if (input_convert == "vanilla" || input_convert == "\"vanilla\"" || input_convert == "1" || input_convert == "van") { Globals.convert_to = "vanilla"; }
             if (input_convert == "\\") { return; }
             Console.WriteLine($"Characters will be converted to {Globals.convert_to}.");
+
+            /*
+            // TODO: Allow the user to enter a specific format, if the program can't reliably determine file formats?
+            Console.WriteLine("Would you like to force convert from a specific format?");
+            Console.Write("Enter s1 (1), s2 (2), s3 (3), or leave blank to auto-detect format: ");
+            string input_orig = Console.ReadLine().ToLowerInvariant();
+            if (input_orig == "s1" || input_orig == "1") { Globals.convert_from = "pd2_s1"; Globals.force = true; }
+            else if (input_orig == "s2" || input_orig == "2") { Globals.convert_from = "pd2_s2"; Globals.force = true; }
+            else if (input_orig == "s3" || input_orig == "3") { Globals.convert_from = "pd2_s3"; Globals.force = true; }
+            if (input_convert == "\\") { return; }
+            if (Globals.force) { Console.WriteLine($"Characters will be assumed to be {Globals.convert_from}."); }
+            else { Console.WriteLine($"Character formats will be auto-detected."); }
+            */
 
             Console.Write("Enter the character's name, or leave blank to convert all characters: ");
             string input_name = Console.ReadLine();
@@ -111,9 +124,6 @@ namespace D2SLib
                 }
             }
 
-            // TODO: implement conversion for .d2i/.sss files (shared stash)
-            //ConvertStash();
-
             Console.Write("Press enter to close.");
             Console.ReadLine();
 
@@ -125,133 +135,93 @@ namespace D2SLib
 
             Console.Write($"Reading {input_name}{Globals.CFE}...");
 
-            Globals.recognized = true;
             Globals.vanilla = true;
-            Globals.version = "vanilla";
             Globals.space = new byte[000];
             D2S character = new D2S();
-            Core.TXT = Globals.txt_vanilla;
-            try
+            if (!Globals.force)
             {
-                character = Core.ReadD2S(File.ReadAllBytes(Globals.input_dir + input_name + Globals.CFE));
-            }
-            catch
-            {
-                if (writeConsole) { Console.WriteLine("EXCEPTION, TRYING PD2 FORMATTING (S3)..."); }
-                Globals.vanilla = false;
-                Globals.version = "pd2_s3";
-                Core.TXT = Globals.txt_pd2_s3;
+                Globals.convert_from = "vanilla";
+                Core.TXT = Globals.txt_vanilla;
                 try
                 {
                     character = Core.ReadD2S(File.ReadAllBytes(Globals.input_dir + input_name + Globals.CFE));
                 }
                 catch
                 {
-                    if (writeConsole) { Console.WriteLine("EXCEPTION, TRYING PD2 FORMATTING (S2)..."); }
-                    Globals.version = "pd2_s2";
-                    Core.TXT = Globals.txt_pd2_s2;
+                    if (writeConsole) { Console.WriteLine("EXCEPTION, TRYING PD2 FORMATTING (S1)..."); }
+                    Globals.vanilla = false;
+                    Globals.convert_from = "pd2_s1";
+                    Core.TXT = Globals.txt_pd2_s1;
                     try
                     {
                         character = Core.ReadD2S(File.ReadAllBytes(Globals.input_dir + input_name + Globals.CFE));
                     }
                     catch
                     {
-                        if (writeConsole) { Console.WriteLine("EXCEPTION, TRYING PD2 FORMATTING (S1)..."); }
-                        Globals.version = "pd2_s1";
-                        Core.TXT = Globals.txt_pd2_s1;
+                        if (writeConsole) { Console.WriteLine("EXCEPTION, TRYING PD2 FORMATTING (S2)..."); }
+                        Globals.convert_from = "pd2_s2";
+                        Core.TXT = Globals.txt_pd2_s2;
                         try
                         {
                             character = Core.ReadD2S(File.ReadAllBytes(Globals.input_dir + input_name + Globals.CFE));
                         }
                         catch
                         {
-                            if (writeConsole) { Console.WriteLine("EXCEPTION, UNABLE TO DETERMINE FORMAT"); }
-                            Globals.recognized = false;
-                            Globals.version = "?";
-                            Console.Write($" ignored (unknown file format)\r\n");
+                            if (writeConsole) { Console.WriteLine("EXCEPTION, TRYING PD2 FORMATTING (S3)..."); }
+                            Globals.convert_from = "pd2_s3";
+                            Core.TXT = Globals.txt_pd2_s3;
+                            try
+                            {
+                                character = Core.ReadD2S(File.ReadAllBytes(Globals.input_dir + input_name + Globals.CFE));
+                            }
+                            catch
+                            {
+                                if (writeConsole) { Console.WriteLine("EXCEPTION, UNABLE TO DETERMINE FORMAT"); }
+                                Globals.convert_from = "?";
+                                Console.Write($" ignored (unknown file format)\r\n");
+                            }
                         }
                     }
                 }
             }
-
-            if (Globals.recognized)
+            else
             {
-                Globals.vanilla = false;
-                Core.TXT = Globals.txt_pd2_s3;
-                File.WriteAllBytes(Globals.output_dir + input_name + Globals.CFE, Core.WriteD2S(character));
-                Console.Write($" [{Globals.version}]...");
-                Console.Write(" saved\r\n");
-            }
-
-        }
-
-        public static void ConvertStash()
-        {
-            // TODO...
-
-            Console.Write("Reading stash...");
-
-            //string stash_name = "_LOD_SharedStashSave.sss"; // D2 PlugY (is this even supported by D2SLib?)
-            string stash_name = "SharedStash_SoftCore.d2i"; // D2 Resurrected
-            string stash_input_dir = Globals.PROJECT_DIRECTORY + @"\Resources\D2I\input\" + stash_name;
-            string stash_output_dir = Globals.PROJECT_DIRECTORY + @"\Resources\D2I\output\" + stash_name;
-            uint stash_ver = 60;
-            Globals.recognized = true;
-            //Globals.vanilla = true;
-            D2I stash = new D2I();
-            Core.TXT = Globals.txt_vanilla;
-            try
-            {
-                stash = Core.ReadD2I(File.ReadAllBytes(stash_input_dir), stash_ver);
-            }
-            catch
-            {
-                //Globals.vanilla = false;
-                //Globals.version = "pd2_s3";
-                Core.TXT = Globals.txt_pd2_s3;
+                if (Globals.convert_from == "pd2_s1") { Core.TXT = Globals.txt_pd2_s1; }
+                else if (Globals.convert_from == "pd2_s2") { Core.TXT = Globals.txt_pd2_s2; }
+                else if (Globals.convert_from == "pd2_s3") { Core.TXT = Globals.txt_pd2_s3; }
                 try
                 {
-                    stash = Core.ReadD2I(File.ReadAllBytes(stash_input_dir), stash_ver);
+                    character = Core.ReadD2S(File.ReadAllBytes(Globals.input_dir + input_name + Globals.CFE));
                 }
                 catch
                 {
-                    //Globals.version = "pd2_s2";
-                    Core.TXT = Globals.txt_pd2_s2;
-                    try
-                    {
-                        stash = Core.ReadD2I(File.ReadAllBytes(stash_input_dir), stash_ver);
-                    }
-                    catch
-                    {
-                        //Globals.version = "pd2_s1";
-                        Core.TXT = Globals.txt_pd2_s1;
-                        try
-                        {
-                            stash = Core.ReadD2I(File.ReadAllBytes(stash_input_dir), stash_ver);
-                        }
-                        catch
-                        {
-                            Globals.recognized = false;
-                            //Globals.version = "?";
-                            Console.Write($" ignored (unknown file format)\r\n");
-                        }
-                    }
+                    Console.Write(" ignored (format mismatch)\r\n");
+                    return;
                 }
             }
 
-            if (Globals.recognized)
+            if (Globals.convert_from != "?")
             {
-                //Globals.vanilla = false;
-                if (Globals.convert_to == "vanilla")
+                /*
+                // testing item stats
+                for (int i = 0; i < character.PlayerItemList.Items.Count; i++)
                 {
-                    Core.TXT = Globals.txt_vanilla;
+                    for (int l = 0; l < character.PlayerItemList.Items[i].StatLists.Count; l++)
+                    {
+                        for (int s = 0; s < character.PlayerItemList.Items[i].StatLists[l].Stats.Count; s++)
+                        {
+                            Console.WriteLine($"{i} {l} {s}: " + character.PlayerItemList.Items[i].StatLists[l].Stats[s].Stat + " " + character.PlayerItemList.Items[i].StatLists[l].Stats[s].Param + " " + character.PlayerItemList.Items[i].StatLists[l].Stats[s].Value);
+                        }
+                    }
                 }
-                else
-                {
-                    Core.TXT = Globals.txt_pd2_s3;
-                }
-                File.WriteAllBytes(stash_output_dir, Core.WriteD2I(stash, stash_ver));
-                //Console.Write($" [{Globals.version}]...");
+                */
+
+                Globals.vanilla = false;
+                if (Globals.convert_to == "vanilla") { Core.TXT = Globals.txt_vanilla; }
+                else { Core.TXT = Globals.txt_pd2_s3; }
+
+                File.WriteAllBytes(Globals.output_dir + input_name + Globals.CFE, Core.WriteD2S(character));
+                Console.Write($" [{Globals.convert_from}]...");
                 Console.Write(" saved\r\n");
             }
 
