@@ -1,7 +1,9 @@
 ## Simple Character Converter for PD2
 This program converts character files between vanilla and PD2, and updates PD2 character files so they can be used with the most recent season.
 
-Supports all PD2 characters and vanilla characters from v1.10 onward (2003-2021). Built from [dschu012's D2SLib](https://github.com/dschu012/D2SLib) repository.
+Supports all PD2 characters and vanilla characters from v1.10 (2003) onward. Built from [dschu012's D2SLib](https://github.com/dschu012/D2SLib) repository.
+
+### [Download](https://github.com/BetweenWalls/PD2-Converter/archive/main.zip)
 
 To use, run D2SLib.exe from within the *src\bin\Debug\netcoreapp3.1* folder. Character files will be read from the input folder (*src\Resources\D2S\input*) and saved in the output folder (*src\Resources\D2S\output*). I recommend creating shortcuts for each.
 
