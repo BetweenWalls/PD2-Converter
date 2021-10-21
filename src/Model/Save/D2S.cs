@@ -167,7 +167,7 @@ namespace D2SLib.Model.Save
                 if (writeConsole) { Console.WriteLine("PlayerCorpses: " + d2s.PlayerCorpses); }
                 if (d2s.Status.IsExpansion)
                 {
-                    Boolean temp = D2SLib.Globals.vanilla;  // store value
+                    bool temp = D2SLib.Globals.vanilla;  // store value
                     D2SLib.Globals.vanilla = true;  // temporarily set vanilla (merc/golem formatting isn't different for PD2)
                     d2s.MercenaryItemList = MercenaryItemList.Read(reader, d2s.Mercenary, d2s.Header.Version);
                     if (writeConsole) { Console.WriteLine("MercenaryItemList: " + d2s.MercenaryItemList); }
@@ -223,7 +223,7 @@ namespace D2SLib.Model.Save
                 writer.WriteBytes(CorpseList.Write(d2s.PlayerCorpses, d2s.Header.Version));
                 if (d2s.Status.IsExpansion)
                 {
-                    Boolean temp = D2SLib.Globals.vanilla;  // store value
+                    bool temp = D2SLib.Globals.vanilla;  // store value
                     D2SLib.Globals.vanilla = true;  // temporarily set vanilla (merc/golem formatting isn't different for PD2)
                     writer.WriteBytes(MercenaryItemList.Write(d2s.MercenaryItemList, d2s.Mercenary, d2s.Header.Version));
                     writer.WriteBytes(Golem.Write(d2s.Golem, d2s.Header.Version));
