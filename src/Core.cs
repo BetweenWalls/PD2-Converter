@@ -38,15 +38,24 @@ namespace D2SLib
         {
             return Item.Read(bytes, version);
         }
-
-        public static D2I ReadD2I(string path, UInt32 version)
+        public static D2I ReadD2I(string path, UInt32 version)  // old version
         {
-            return ReadD2I(File.ReadAllBytes(path), version);
+            return ReadD2I(File.ReadAllBytes(path), version, ".sss");
         }
 
-        public static D2I ReadD2I(byte[] bytes, UInt32 version)
+        public static D2I ReadD2I(byte[] bytes, UInt32 version)  // old version
         {
-            return D2I.Read(bytes, version);
+            return D2I.Read(bytes, version, ".sss");
+        }
+
+        public static D2I ReadD2I(string path, UInt32 version, string type)
+        {
+            return ReadD2I(File.ReadAllBytes(path), version, type);
+        }
+
+        public static D2I ReadD2I(byte[] bytes, UInt32 version, string type)
+        {
+            return D2I.Read(bytes, version, type);
         }
 
         public static byte[] WriteD2S(D2S d2s)
@@ -59,9 +68,14 @@ namespace D2SLib
             return Item.Write(item, version);
         }
 
-        public static byte[] WriteD2I(D2I d2i, UInt32 version)
+        public static byte[] WriteD2I(D2I d2i, UInt32 version)  // old version
         {
-            return D2I.Write(d2i, version);
+            return D2I.Write(d2i, version, ".sss");
+        }
+
+        public static byte[] WriteD2I(D2I d2i, UInt32 version, string type)
+        {
+            return D2I.Write(d2i, version, type);
         }
 
     }

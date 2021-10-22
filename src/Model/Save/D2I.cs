@@ -7,28 +7,30 @@ namespace D2SLib.Model.Save
 {
     public class D2I
     {
-
-        public HeaderD2I Header { get; set; }
+        //0x00
+        public UInt32 Magic { get; set; }  // "SSS\0" (0x00535353) for .sss files, "CSTM" (0x4D545343) for .d2x files
+        //0x04
+        public UInt16 Version { get; set; } // "01" (0x3130) [no gold] or "02" (0x3230) [shared gold] for .sss files, "01" (0x3130) for .d2x files
+        //0x06
+        public UInt32 Gold { get; set; }    // Shared gold (0 bytes if no gold)
+        //0x06 or 0x0A
+        public UInt32 Pages { get; set; }   // Number of pages in the stash data
+        //0x0A or 0x0E
         public StashPage[] PageList { get; set; }
 
-        public static D2I Read(byte[] bytes, UInt32 version)
+        public static D2I Read(byte[] bytes, UInt32 version, string type)
         {
-            Boolean writeConsole = D2SLib.Globals.writeConsole_Stash;
-            D2I d2i = new D2I();
+            bool writeConsole = D2SLib.Globals.writeConsole_Stash;
             using (BitReader reader = new BitReader(bytes))
             {
-                // TODO: Merge D2I.cs and HeaderD2I?
-                HeaderD2I header = new HeaderD2I();
-                header.Magic = reader.ReadUInt32();
-                header.Version = reader.ReadUInt16();
-                if (header.Version == 12848) header.Gold = reader.ReadUInt32(); // no gold = 12592, gold = 12848
-                header.Pages = reader.ReadUInt32();
-                if (writeConsole) Console.WriteLine($"Stash Version: {header.Version}");
-                //d2i.Header = HeaderD2I.Read(reader.ReadBytes(X)); // bytes used are either 10 or 14
-                d2i.Header = header;
-
-                if (writeConsole) Console.WriteLine("Shared Gold: " + d2i.Header.Gold);
-                d2i.PageList = new StashPage[d2i.Header.Pages];
+                D2I d2i = new D2I();
+                d2i.Magic = reader.ReadUInt32();
+                d2i.Version = reader.ReadUInt16();
+                if (d2i.Version == 12848 || type == ".d2x") d2i.Gold = reader.ReadUInt32(); // no gold = 12592, gold = 12848
+                d2i.Pages = reader.ReadUInt32();
+                if (writeConsole) Console.WriteLine($"\r\nStash Version: {d2i.Version}");
+                if (writeConsole) Console.WriteLine("Shared Gold: " + d2i.Gold);
+                d2i.PageList = new StashPage[d2i.Pages];
                 for (int p = 0; p < d2i.PageList.Length; p++)
                 {
                     d2i.PageList[p] = new StashPage();
@@ -39,18 +41,21 @@ namespace D2SLib.Model.Save
             }
         }
 
-        public static byte[] Write(D2I d2i, UInt32 version)
+        public static byte[] Write(D2I d2i, UInt32 version, string type)
         {
             using (BitWriter writer = new BitWriter())
             {
-                writer.WriteBytes(HeaderD2I.Write(d2i.Header));
-                for (int p = 0; p < d2i.Header.Pages; p++)
+                writer.WriteUInt32(d2i.Magic);  // TODO: check if "SSS\0" or "CSTM" should be specified - d2i.Magic can't be null, can it?
+                writer.WriteUInt16(d2i.Version);
+                if (d2i.Version != 0x3130 || type == ".d2x") writer.WriteUInt32(d2i.Gold);
+                writer.WriteUInt32(d2i.Pages);
+                for (int p = 0; p < d2i.Pages; p++)
                 {
                     writer.WriteBytes(StashPage.Write(d2i.PageList[p], version));
                 }
                 return writer.ToArray();
             }
         }
-
+        
     }
 }

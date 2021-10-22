@@ -1,7 +1,7 @@
 ## Simple Character/Stash Converter for PD2
 This program converts character/stash files between vanilla and PD2, and updates PD2 files so they can be used with the most recent season.
 
-Supports all PD2 characters and vanilla characters from v1.10 (2003) onward, and shared stash files from PlugY v11.02 or later. Built from [dschu012's D2SLib](https://github.com/dschu012/D2SLib) repository.
+Supports all PD2 characters and vanilla characters from v1.10+, as well as shared/personal stash files from PlugY v11.02+. Built from [dschu012's D2SLib](https://github.com/dschu012/D2SLib) repository.
 
 ### [Download](https://github.com/BetweenWalls/PD2-Converter/archive/main.zip)
 

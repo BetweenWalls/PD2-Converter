@@ -85,7 +85,7 @@ namespace D2SLib.Model.Save
         {
             using (BitReader reader = new BitReader(bytes))
             {
-                Boolean writeConsole = D2SLib.Globals.writeConsole_D2SRead;
+                bool writeConsole = D2SLib.Globals.writeConsole_D2SRead;
                 D2S d2s = new D2S();
                 d2s.Header = Header.Read(reader.ReadBytes(16));
                 if (writeConsole) { Console.WriteLine("Header..."); }

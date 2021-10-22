@@ -21,6 +21,7 @@ namespace D2SLib.Model.Save
         {
             Boolean writeConsole = D2SLib.Globals.writeConsole_Stash;
             version = 0x60;
+            //version = 0x5453;
             page.Header = reader.ReadUInt16();
             page.Flags = reader.ReadUInt32();
 
@@ -29,15 +30,15 @@ namespace D2SLib.Model.Save
             while (!page_name_finished)
             {
                 string temp = reader.ReadString(1);
-                if (String.IsNullOrEmpty(temp)) page_name_finished = true;
                 page_name += temp;
+                if (String.IsNullOrEmpty(temp)) page_name_finished = true;
             }
             page.Name = page_name;
             if (writeConsole) Console.Write($"{page.Name}");
-            page.PageItems = new ItemList();
+            //page.PageItems = new ItemList();
             page.PageItems = ItemList.Read(reader, version);
 
-            if (writeConsole) Console.Write($"...{page.PageItems.Items.Count} items\r\n");
+            if (writeConsole) Console.Write($" ...{page.PageItems.Items.Count} items\r\n");
             for (int i = 0; i < page.PageItems.Items.Count; i++)
             {
                 //if (writeConsole) Console.WriteLine($"- {page.PageItems.Items[i].Code} ({page.PageItems.Items[i].Quality})");
@@ -51,10 +52,18 @@ namespace D2SLib.Model.Save
             {
                 writer.WriteUInt16(page.Header ?? 0x5453);
                 writer.WriteUInt32(page.Flags);
-                writer.WriteString(page.Name, page.Name.Length);
-                ItemList.Write(page.PageItems, version);
+                writer.WriteString(page.Name + '\0', page.Name.Length + 1);
+                // TODO: Simplify further by calling ItemList.Write?
+                writer.WriteString("JM", "JM".Length);
+                writer.WriteUInt16(page.PageItems.Count);
+                for (int i = 0; i < page.PageItems.Count; i++)
+                {
+                    Item.Write(page.PageItems.Items[i], 0x60, writer);
+                }
+                
                 return writer.ToArray();
             }
+
         }
 
     }

@@ -57,7 +57,7 @@ namespace D2SLib.Model.Save
 
         public static ItemList Read(BitReader reader, UInt32 version)
         {
-            Boolean writeConsole = D2SLib.Globals.writeConsole_ItemsRead;
+            bool writeConsole = D2SLib.Globals.writeConsole_ItemsRead;
             if (writeConsole) { Console.WriteLine("PlayerItemList..."); }
             if (!D2SLib.Globals.vanilla)
             {
@@ -108,6 +108,18 @@ namespace D2SLib.Model.Save
                 return writer.ToArray();
             }
         }
+        /*
+        public static byte[] Write(ItemList itemList, UInt32 version, BitWriter writer) // itemnew TODO
+        {
+            writer.WriteUInt16(itemList.Header ?? (UInt16)0x4D4A);
+            writer.WriteUInt16(itemList.Count);
+            for (int i = 0; i < itemList.Count; i++)
+            {
+                writer.WriteBytes(Item.Write(itemList.Items[i], version, writer));
+            }
+            return writer.ToArray();
+        }
+        */
     }
 
     public class Item
@@ -208,6 +220,25 @@ namespace D2SLib.Model.Save
                 }
                 return writer.ToArray();
             }
+        }
+        
+        public static byte[] Write(Item item, UInt32 version, BitWriter writer) // itemnew TODO
+        {
+            if (version <= 0x60)
+            {
+                writer.WriteUInt16(item.Header ?? (UInt16)0x4D4A);
+            }
+            WriteCompact(writer, item, version);
+            if (!item.IsCompact)
+            {
+                WriteComplete(writer, item, version);
+            }
+            writer.Align();
+            for (int i = 0; i < item.NumberOfSocketedItems; i++)
+            {
+                writer.WriteBytes(Item.Write(item.SocketedItems[i], version));
+            }
+            return writer.ToArray();
         }
 
         protected static string ReadPlayerName(BitReader reader)
@@ -339,7 +370,7 @@ namespace D2SLib.Model.Save
 
         protected static void ReadComplete(BitReader reader, Item item, UInt32 version)
         {
-            Boolean writeConsole = D2SLib.Globals.writeConsole_ItemsReadComplete;
+            bool writeConsole = D2SLib.Globals.writeConsole_ItemsReadComplete;
             item.Id = reader.ReadUInt32();
             if (writeConsole) { Console.WriteLine("Item-Id: " + item.Id); }
             item.ItemLevel = reader.ReadByte(7);
