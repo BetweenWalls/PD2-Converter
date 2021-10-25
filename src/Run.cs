@@ -181,6 +181,7 @@ namespace D2SLib
                     character.Status.IsLadder = false;  // TODO: test whether this works with actual ladder character files
                     was_ladder = true;
                 }
+                if (character.Header.Version == 0x61) character.Header.Version = 0x60; // TODO: test whether this works with actual D2R character files (0x61 = D2R, 0x60 = legacy)
 
                 if (Globals.convert_to == "vanilla") { Globals.vanilla = false; Core.TXT = Globals.txt_vanilla; }
                 else { Globals.vanilla = false; Core.TXT = Globals.txt_pd2_s3; }
