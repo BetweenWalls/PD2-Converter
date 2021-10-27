@@ -7,6 +7,8 @@ namespace D2SLib
     public class Core
     {
         private static TXT _TXT = null;
+        public static TXT TXT { get; set; }
+        /*
         public static TXT TXT
         {
             get
@@ -18,6 +20,7 @@ namespace D2SLib
                 _TXT = value;
             }
         }
+        */
 
         public static D2S ReadD2S(string path)
         {

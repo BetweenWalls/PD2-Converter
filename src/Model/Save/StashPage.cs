@@ -14,7 +14,7 @@ namespace D2SLib.Model.Save
         public UInt32 Flags { get; set; }   // isShared, isIndex, isMainIndex, isReserved (4 bytes since PlugY 11.02, else 0 bytes... older versions not supported)
         //0x06
         public string Name { get; set; }    // Page name (up to 15 characters + null in PlugY 11.02, or up to 20 characters + null in PlugY 14 or later)
-        //Variable (0-20 + 1)
+        //Variable
         public ItemList PageItems { get; set; }
 
         public static StashPage Read(StashPage page, BitReader reader, UInt32 version)

@@ -85,97 +85,97 @@ namespace D2SLib.Model.Save
         {
             using (BitReader reader = new BitReader(bytes))
             {
-                bool writeConsole = D2SLib.Globals.writeConsole_D2SRead;
+                bool writeConsole = Globals.writeConsole_D2SRead;
                 D2S d2s = new D2S();
                 d2s.Header = Header.Read(reader.ReadBytes(16));
-                if (writeConsole) { Console.WriteLine("Header..."); }
-                if (writeConsole) { Console.WriteLine("Header-Magic: " + d2s.Header.Magic); }
-                if (writeConsole) { Console.WriteLine("Header-Version: " + d2s.Header.Version); }
-                if (writeConsole) { Console.WriteLine("Header-Filesize: " + d2s.Header.Filesize); }
-                if (writeConsole) { Console.WriteLine("Header-Checksum: " + d2s.Header.Checksum); }
+                if (writeConsole) Console.WriteLine("Header...");
+                if (writeConsole) Console.WriteLine("Header-Magic: " + d2s.Header.Magic);
+                if (writeConsole) Console.WriteLine("Header-Version: " + d2s.Header.Version);
+                if (writeConsole) Console.WriteLine("Header-Filesize: " + d2s.Header.Filesize);
+                if (writeConsole) Console.WriteLine("Header-Checksum: " + d2s.Header.Checksum);
                 d2s.ActiveWeapon = reader.ReadUInt32();
-                if (writeConsole) { Console.WriteLine("ActiveWeapon: " + d2s.ActiveWeapon); }
+                if (writeConsole) Console.WriteLine("ActiveWeapon: " + d2s.ActiveWeapon);
                 d2s.Name = reader.ReadString(16);
-                if (writeConsole) { Console.WriteLine("Name: " + d2s.Name); }
+                if (writeConsole) Console.WriteLine("Name: " + d2s.Name);
                 d2s.Status = Status.Read(reader.ReadByte());
-                if (writeConsole) { Console.WriteLine("Status..."); }
-                if (writeConsole) { Console.WriteLine("Status-Ladder: " + d2s.Status.IsLadder); }
-                if (writeConsole) { Console.WriteLine("Status-Expansion: " + d2s.Status.IsExpansion); }
-                if (writeConsole) { Console.WriteLine("Status-Dead: " + d2s.Status.IsDead); }
-                if (writeConsole) { Console.WriteLine("Status-Hardcore: " + d2s.Status.IsHardcore); }
+                if (writeConsole) Console.WriteLine("Status...");
+                if (writeConsole) Console.WriteLine("Status-Ladder: " + d2s.Status.IsLadder);
+                if (writeConsole) Console.WriteLine("Status-Expansion: " + d2s.Status.IsExpansion);
+                if (writeConsole) Console.WriteLine("Status-Dead: " + d2s.Status.IsDead);
+                if (writeConsole) Console.WriteLine("Status-Hardcore: " + d2s.Status.IsHardcore);
                 d2s.Progression = reader.ReadByte();
-                if (writeConsole) { Console.WriteLine("Progression: " + d2s.Progression); }
+                if (writeConsole) Console.WriteLine("Progression: " + d2s.Progression);
                 d2s.Unk0x0026 = reader.ReadBytes(2);
-                if (writeConsole) { Console.WriteLine("Unk0x0026: " + d2s.Unk0x0026); }
+                if (writeConsole) Console.WriteLine("Unk0x0026: " + d2s.Unk0x0026);
                 d2s.ClassId = reader.ReadByte();
-                if (writeConsole) { Console.WriteLine("ClassId: " + d2s.ClassId); }
+                if (writeConsole) Console.WriteLine("ClassId: " + d2s.ClassId);
                 d2s.Unk0x0029 = reader.ReadBytes(2);
-                if (writeConsole) { Console.WriteLine("Unk0x0029: " + d2s.Unk0x0029); }
+                if (writeConsole) Console.WriteLine("Unk0x0029: " + d2s.Unk0x0029);
                 d2s.Level = reader.ReadByte();
-                if (writeConsole) { Console.WriteLine("Level: " + d2s.Level); }
+                if (writeConsole) Console.WriteLine("Level: " + d2s.Level);
                 d2s.Created = reader.ReadUInt32();
-                if (writeConsole) { Console.WriteLine("Created: " + d2s.Created); }
+                if (writeConsole) Console.WriteLine("Created: " + d2s.Created);
                 d2s.LastPlayed = reader.ReadUInt32();
-                if (writeConsole) { Console.WriteLine("LastPlayed: " + d2s.LastPlayed); }
+                if (writeConsole) Console.WriteLine("LastPlayed: " + d2s.LastPlayed);
                 d2s.Unk0x0034 = reader.ReadBytes(4);
-                if (writeConsole) { Console.WriteLine("Unk0x0034: " + d2s.Unk0x0034); }
+                if (writeConsole) Console.WriteLine("Unk0x0034: " + d2s.Unk0x0034);
                 d2s.AssignedSkills = Enumerable.Range(0, 16).Select(e => Skill.Read(reader.ReadBytes(4))).ToArray();
-                if (writeConsole) { Console.WriteLine("AssignedSkills: " + d2s.AssignedSkills); }
+                if (writeConsole) Console.WriteLine("AssignedSkills: " + d2s.AssignedSkills);
                 d2s.LeftSkill = Skill.Read(reader.ReadBytes(4));
-                if (writeConsole) { Console.WriteLine("LeftSkill: " + d2s.LeftSkill); }
+                if (writeConsole) Console.WriteLine("LeftSkill: " + d2s.LeftSkill);
                 d2s.RightSkill = Skill.Read(reader.ReadBytes(4));
-                if (writeConsole) { Console.WriteLine("RightSkill: " + d2s.RightSkill); }
+                if (writeConsole) Console.WriteLine("RightSkill: " + d2s.RightSkill);
                 d2s.LeftSwapSkill = Skill.Read(reader.ReadBytes(4));
-                if (writeConsole) { Console.WriteLine("LeftSwapSkill: " + d2s.LeftSwapSkill); }
+                if (writeConsole) Console.WriteLine("LeftSwapSkill: " + d2s.LeftSwapSkill);
                 d2s.RightSwapSkill = Skill.Read(reader.ReadBytes(4));
-                if (writeConsole) { Console.WriteLine("RightSwapSkill: " + d2s.RightSwapSkill); }
+                if (writeConsole) Console.WriteLine("RightSwapSkill: " + d2s.RightSwapSkill);
                 d2s.Appearances = Appearances.Read(reader.ReadBytes(32));
-                if (writeConsole) { Console.WriteLine("Appearances: " + d2s.Appearances); }
+                if (writeConsole) Console.WriteLine("Appearances: " + d2s.Appearances);
                 d2s.Location = Locations.Read(reader.ReadBytes(3));
-                if (writeConsole) { Console.WriteLine("Location: " + d2s.Location); }
+                if (writeConsole) Console.WriteLine("Location: " + d2s.Location);
                 d2s.MapId = reader.ReadUInt32();
-                if (writeConsole) { Console.WriteLine("MapId: " + d2s.MapId); }
+                if (writeConsole) Console.WriteLine("MapId: " + d2s.MapId);
                 d2s.Unk0x00af = reader.ReadBytes(2);
-                if (writeConsole) { Console.WriteLine("Unk0x00af: " + d2s.Unk0x00af); }
+                if (writeConsole) Console.WriteLine("Unk0x00af: " + d2s.Unk0x00af);
                 d2s.Mercenary = Mercenary.Read(reader.ReadBytes(14));
-                if (writeConsole) { Console.WriteLine("Mercenary: " + d2s.Mercenary); }
+                if (writeConsole) Console.WriteLine("Mercenary: " + d2s.Mercenary);
                 d2s.RealmData = reader.ReadBytes(140);
-                if (writeConsole) { Console.WriteLine("RealmData: " + d2s.RealmData); }
+                if (writeConsole) Console.WriteLine("RealmData: " + d2s.RealmData);
                 d2s.Quests = QuestsSection.Read(reader.ReadBytes(302));
-                if (writeConsole) { Console.WriteLine("Quests: " + d2s.Quests); }
+                if (writeConsole) Console.WriteLine("Quests: " + d2s.Quests);
                 d2s.Waypoints = WaypointsSection.Read(reader.ReadBytes(80));
-                if (writeConsole) { Console.WriteLine("Waypoints: " + d2s.Waypoints); }
+                if (writeConsole) Console.WriteLine("Waypoints: " + d2s.Waypoints);
                 d2s.NPCDialog = NPCDialogSection.Read(reader.ReadBytes(52));
-                if (writeConsole) { Console.WriteLine("NPCDialog: " + d2s.NPCDialog); }
+                if (writeConsole) Console.WriteLine("NPCDialog: " + d2s.NPCDialog);
                 d2s.Attributes = Attributes.Read(reader);
-                if (writeConsole) { Console.WriteLine("Attributes: " + d2s.Attributes); }
+                if (writeConsole) Console.WriteLine("Attributes: " + d2s.Attributes);
                 d2s.ClassSkills = ClassSkills.Read(reader.ReadBytes(32), d2s.ClassId);
-                if (writeConsole) { Console.WriteLine("ClassSkills: " + d2s.ClassSkills); }
-                //if (writeConsole) { Console.WriteLine("PlayerItemList..."); }
+                if (writeConsole) Console.WriteLine("ClassSkills: " + d2s.ClassSkills);
+                //if (writeConsole) Console.WriteLine("PlayerItemList...");
                 d2s.PlayerItemList = ItemList.Read(reader, d2s.Header.Version);
                 /*
-                if (writeConsole) { Console.WriteLine("PlayerItemList-Header: " + d2s.PlayerItemList.Header); }
-                if (writeConsole) { Console.WriteLine("PlayerItemList-Count: " + d2s.PlayerItemList.Count); }
-                if (writeConsole) { Console.WriteLine("Items..."); }
+                if (writeConsole) Console.WriteLine("PlayerItemList-Header: " + d2s.PlayerItemList.Header);
+                if (writeConsole) Console.WriteLine("PlayerItemList-Count: " + d2s.PlayerItemList.Count);
+                if (writeConsole) Console.WriteLine("Items...");
                 for (int i = 0; i < d2s.PlayerItemList.Count; i++)
                 {
-                    if (writeConsole) { Console.WriteLine("Item-" + i + " Code: " + d2s.PlayerItemList.Items[i].Code); }
-                    if (d2s.PlayerItemList.Items[i].Quantity > 0) { if (writeConsole) { Console.WriteLine("Item-" + i + " Quantity: " + d2s.PlayerItemList.Items[i].Quantity); } }
+                    if (writeConsole) Console.WriteLine("Item-" + i + " Code: " + d2s.PlayerItemList.Items[i].Code);
+                    if (d2s.PlayerItemList.Items[i].Quantity > 0) { if (writeConsole) Console.WriteLine("Item-" + i + " Quantity: " + d2s.PlayerItemList.Items[i].Quantity); }
                 }
                 */
                 d2s.PlayerCorpses = CorpseList.Read(reader, d2s.Header.Version);
-                if (writeConsole) { Console.WriteLine("PlayerCorpses: " + d2s.PlayerCorpses); }
+                if (writeConsole) Console.WriteLine("PlayerCorpses: " + d2s.PlayerCorpses);
                 if (d2s.Status.IsExpansion)
                 {
-                    bool temp = D2SLib.Globals.vanilla;  // store value
-                    D2SLib.Globals.vanilla = true;  // temporarily set vanilla (merc/golem formatting isn't different for PD2)
+                    bool temp = Globals.pd2_char_formatting;  // store value
+                    Globals.pd2_char_formatting = false;  // temporarily use vanilla character formatting (merc/golem formatting isn't different for PD2)
                     d2s.MercenaryItemList = MercenaryItemList.Read(reader, d2s.Mercenary, d2s.Header.Version);
-                    if (writeConsole) { Console.WriteLine("MercenaryItemList: " + d2s.MercenaryItemList); }
+                    if (writeConsole) Console.WriteLine("MercenaryItemList: " + d2s.MercenaryItemList);
                     d2s.Golem = Golem.Read(reader, d2s.Header.Version);
-                    if (writeConsole) { Console.WriteLine("Golem: " + d2s.Golem); }
-                    D2SLib.Globals.vanilla = temp;  // reset value
+                    if (writeConsole) Console.WriteLine("Golem: " + d2s.Golem);
+                    Globals.pd2_char_formatting = temp;  // reset value
                 }
-                Debug.Assert(reader.Position == (bytes.Length * 8));
+                //Debug.Assert(reader.Position == (bytes.Length * 8));
                 return d2s;
             }
         }
@@ -223,11 +223,11 @@ namespace D2SLib.Model.Save
                 writer.WriteBytes(CorpseList.Write(d2s.PlayerCorpses, d2s.Header.Version));
                 if (d2s.Status.IsExpansion)
                 {
-                    bool temp = D2SLib.Globals.vanilla;  // store value
-                    D2SLib.Globals.vanilla = true;  // temporarily set vanilla (merc/golem formatting isn't different for PD2)
+                    bool temp = Globals.pd2_char_formatting;  // store value
+                    Globals.pd2_char_formatting = false;  // temporarily use vanilla character formatting (merc/golem formatting isn't different for PD2)
                     writer.WriteBytes(MercenaryItemList.Write(d2s.MercenaryItemList, d2s.Mercenary, d2s.Header.Version));
                     writer.WriteBytes(Golem.Write(d2s.Golem, d2s.Header.Version));
-                    D2SLib.Globals.vanilla = temp;  // reset value
+                    Globals.pd2_char_formatting = temp;  // reset value
                 }
                 byte[] bytes =  writer.ToArray();
                 Header.Fix(bytes);

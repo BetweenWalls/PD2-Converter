@@ -18,18 +18,18 @@ namespace D2SLib
         {
             ResourceFilesTXT resourceFilesTXT = new ResourceFilesTXT();
             resourceFilesTXT.TXT = new TXT();
-            using(Stream s = GetResource(@"TEXT\vanilla\ItemStatCost.txt")) {
+            using(Stream s = GetResource(Globals.TEXT_DIR + @"vanilla\ItemStatCost.txt")) {
                 resourceFilesTXT.TXT.ItemStatCostTXT = ItemStatCostTXT.Read(s);
             }
-            using (Stream s = GetResource(@"TEXT\vanilla\Armor.txt"))
+            using (Stream s = GetResource(Globals.TEXT_DIR + @"vanilla\Armor.txt"))
             {
                 resourceFilesTXT.TXT.ItemsTXT.ArmorTXT = ArmorTXT.Read(s);
             }
-            using (Stream s = GetResource(@"TEXT\vanilla\Weapons.txt"))
+            using (Stream s = GetResource(Globals.TEXT_DIR + @"vanilla\Weapons.txt"))
             {
                 resourceFilesTXT.TXT.ItemsTXT.WeaponsTXT = WeaponsTXT.Read(s);
             }
-            using (Stream s = GetResource(@"TEXT\vanilla\Misc.txt"))
+            using (Stream s = GetResource(Globals.TEXT_DIR + @"vanilla\Misc.txt"))
             {
                 resourceFilesTXT.TXT.ItemsTXT.MiscTXT = MiscTXT.Read(s);
             }
@@ -39,7 +39,7 @@ namespace D2SLib
         private static Stream GetResource(string file)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            return assembly.GetManifestResourceStream($"D2SLib.Resources.{file}");
+            return assembly.GetManifestResourceStream($"D2SLib.main.{file}");
         }
     }
 }

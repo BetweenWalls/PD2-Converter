@@ -108,7 +108,7 @@ namespace D2SLib.Model.Save
                         writer.WriteBytes(Quest.Write(quest));
                     }
                 }
-                Debug.Assert(writer.Position == 96 * 8);
+                //Debug.Assert(writer.Position == 96 * 8);
                 return writer.ToArray();
             }
         }

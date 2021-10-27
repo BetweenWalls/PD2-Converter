@@ -57,36 +57,33 @@ namespace D2SLib.Model.Save
 
         public static ItemList Read(BitReader reader, UInt32 version)
         {
-            bool writeConsole = D2SLib.Globals.writeConsole_ItemsRead;
-            if (writeConsole) { Console.WriteLine("PlayerItemList..."); }
-            if (!D2SLib.Globals.vanilla)
+            bool writeConsole = Globals.writeConsole_ItemsRead;
+            if (writeConsole) Console.WriteLine("PlayerItemList...");
+            if (Globals.pd2_char_formatting)
             {
-                D2SLib.Globals.space = reader.ReadBytes(3);    // PD2?
+                Globals.space = reader.ReadBytes(3);    // 3 bytes reserved for new PD2 skills
 
-                if (writeConsole) { Console.Write("space: "); }
-                foreach (byte b in D2SLib.Globals.space)
+                if (writeConsole) Console.Write("space: ");
+                foreach (byte b in Globals.space)
                 {
-                    if (writeConsole) { Console.Write(D2SLib.Globals.space[b] + " "); }
+                    if (writeConsole) Console.Write(Globals.space[b] + " ");
                 }
-                if (writeConsole) { Console.Write("\r\n"); }
-                
+                if (writeConsole) Console.Write("\r\n");
             }
 
             // TODO: this gets called for player items, mercenary items, and also iron golem - change console output?
 
             ItemList itemList = new ItemList();
             itemList.Header = reader.ReadUInt16();
-            if (writeConsole) { Console.WriteLine("PlayerItemList-Header: " + itemList.Header); }
+            if (writeConsole) Console.WriteLine("PlayerItemList-Header: " + itemList.Header);
             itemList.Count = reader.ReadUInt16();
-            if (writeConsole) { Console.WriteLine("PlayerItemList-Count: " + itemList.Count); }
-            //if (writeConsole) { Console.WriteLine("PlayerItemList-Count: " + Convert.ToString(itemList.Count, 2)); }
-            if (writeConsole) { Console.WriteLine("Items..."); }
+            if (writeConsole) Console.WriteLine("PlayerItemList-Count: " + itemList.Count);
+            if (writeConsole) Console.WriteLine("Items...");
             for (int i = 0; i < itemList.Count; i++)
             {
                 itemList.Items.Add(Item.Read(reader, version));
-                if (writeConsole) { Console.WriteLine("Item-" + i + " Code: " + itemList.Items[i].Code); }
-                //if (writeConsole) { Console.WriteLine("Item-" + i + " Location: " + itemList.Items[i].Location); }
-                if (itemList.Items[i].Quantity > 0) { if (writeConsole) { Console.WriteLine("Item-" + i + " Quantity: " + itemList.Items[i].Quantity); } }
+                if (writeConsole) Console.WriteLine("Item-" + i + " Code: " + itemList.Items[i].Code);
+                if (itemList.Items[i].Quantity > 0) { if (writeConsole) Console.WriteLine("Item-" + i + " Quantity: " + itemList.Items[i].Quantity); }
             }
             return itemList;
         }
@@ -95,9 +92,9 @@ namespace D2SLib.Model.Save
         {
             using (BitWriter writer = new BitWriter())
             {
-                if (!D2SLib.Globals.vanilla)
+                if (Globals.pd2_char_formatting)
                 {
-                    writer.WriteBytes(D2SLib.Globals.space);    // PD2?
+                    writer.WriteBytes(Globals.space);    // 3 bytes reserved for new PD2 skills
                 }
                 writer.WriteUInt16(itemList.Header ?? (UInt16)0x4D4A);
                 writer.WriteUInt16(itemList.Count);
@@ -109,7 +106,7 @@ namespace D2SLib.Model.Save
             }
         }
         /*
-        public static byte[] Write(ItemList itemList, UInt32 version, BitWriter writer) // itemnew TODO
+        public static byte[] Write(ItemList itemList, UInt32 version, BitWriter writer) // added for PD2 conversion
         {
             writer.WriteUInt16(itemList.Header ?? (UInt16)0x4D4A);
             writer.WriteUInt16(itemList.Count);
@@ -222,7 +219,7 @@ namespace D2SLib.Model.Save
             }
         }
         
-        public static byte[] Write(Item item, UInt32 version, BitWriter writer) // itemnew TODO
+        public static byte[] Write(Item item, UInt32 version, BitWriter writer) // added for PD2 conversion
         {
             if (version <= 0x60)
             {
@@ -370,26 +367,26 @@ namespace D2SLib.Model.Save
 
         protected static void ReadComplete(BitReader reader, Item item, UInt32 version)
         {
-            bool writeConsole = D2SLib.Globals.writeConsole_ItemsReadComplete;
+            bool writeConsole = Globals.writeConsole_ItemsReadComplete;
             item.Id = reader.ReadUInt32();
-            if (writeConsole) { Console.WriteLine("Item-Id: " + item.Id); }
+            if (writeConsole) Console.WriteLine("Item-Id: " + item.Id);
             item.ItemLevel = reader.ReadByte(7);
-            if (writeConsole) { Console.WriteLine("Item-ItemLevel: " + item.ItemLevel); }
+            if (writeConsole) Console.WriteLine("Item-ItemLevel: " + item.ItemLevel);
             item.Quality = (ItemQuality)reader.ReadByte(4);
-            if (writeConsole) { Console.WriteLine("Item-Quality: " + item.Quality); }
+            if (writeConsole) Console.WriteLine("Item-Quality: " + item.Quality);
             item.HasMultipleGraphics = reader.ReadBit();
-            if (writeConsole) { Console.WriteLine("Item-HasMultipleGraphics: " + item.HasMultipleGraphics); }
+            if (writeConsole) Console.WriteLine("Item-HasMultipleGraphics: " + item.HasMultipleGraphics);
             if (item.HasMultipleGraphics)
             {
                 item.GraphicId = reader.ReadByte(3);
-                if (writeConsole) { Console.WriteLine("Item-GraphicId: " + item.GraphicId); }
+                if (writeConsole) Console.WriteLine("Item-GraphicId: " + item.GraphicId);
             }
             item.IsAutoAffix = reader.ReadBit();
-            if (writeConsole) { Console.WriteLine("Item-IsAutoAffix: " + item.IsAutoAffix); }
+            if (writeConsole) Console.WriteLine("Item-IsAutoAffix: " + item.IsAutoAffix);
             if (item.IsAutoAffix)
             {
                 item.AutoAffixId = reader.ReadUInt16(11);
-                if (writeConsole) { Console.WriteLine("Item-AutoAffixId: " + item.AutoAffixId); }
+                if (writeConsole) Console.WriteLine("Item-AutoAffixId: " + item.AutoAffixId);
             }
             switch(item.Quality)
             {
@@ -398,91 +395,91 @@ namespace D2SLib.Model.Save
                 case ItemQuality.Inferior:
                 case ItemQuality.Superior:
                     item.FileIndex = reader.ReadUInt16(3);
-                    if (writeConsole) { Console.WriteLine("Item-FileIndex: " + item.FileIndex); }
+                    if (writeConsole) Console.WriteLine("Item-FileIndex: " + item.FileIndex);
                     break;
                 case ItemQuality.Magic:
                     item.MagicPrefixIds[0] = reader.ReadUInt16(11);
-                    if (writeConsole) { Console.WriteLine("Item-MagicPrefixIds: " + item.MagicPrefixIds); }
+                    if (writeConsole) Console.WriteLine("Item-MagicPrefixIds: " + item.MagicPrefixIds);
                     item.MagicSuffixIds[0] = reader.ReadUInt16(11);
-                    if (writeConsole) { Console.WriteLine("Item-MagicSuffixIds: " + item.MagicSuffixIds); }
+                    if (writeConsole) Console.WriteLine("Item-MagicSuffixIds: " + item.MagicSuffixIds);
                     break;
                 case ItemQuality.Rare:
                 case ItemQuality.Craft:
                     item.RarePrefixId = reader.ReadUInt16(8);
-                    if (writeConsole) { Console.WriteLine("Item-RarePrefixId: " + item.RarePrefixId); }
+                    if (writeConsole) Console.WriteLine("Item-RarePrefixId: " + item.RarePrefixId);
                     item.RareSuffixId = reader.ReadUInt16(8);
-                    if (writeConsole) { Console.WriteLine("Item-RareSuffixId: " + item.RareSuffixId); }
+                    if (writeConsole) Console.WriteLine("Item-RareSuffixId: " + item.RareSuffixId);
                     for (int i = 0; i < 3; i++)
                     {
                         if(reader.ReadBit())
                         {
                             item.MagicPrefixIds[i] = reader.ReadUInt16(11);
-                            if (writeConsole) { Console.WriteLine("Item-MagicPrefixIds: " + item.MagicPrefixIds); }
+                            if (writeConsole) Console.WriteLine("Item-MagicPrefixIds: " + item.MagicPrefixIds);
                         }
                         if(reader.ReadBit())
                         {
                             item.MagicSuffixIds[i] = reader.ReadUInt16(11);
-                            if (writeConsole) { Console.WriteLine("Item-MagicSuffixIds: " + item.MagicSuffixIds); }
+                            if (writeConsole) Console.WriteLine("Item-MagicSuffixIds: " + item.MagicSuffixIds);
                         }
                     }
                     break;
                 case ItemQuality.Set:
                 case ItemQuality.Unique:
                     item.FileIndex = reader.ReadUInt16(12);
-                    if (writeConsole) { Console.WriteLine("Item-FileIndex: " + item.FileIndex); }
+                    if (writeConsole) Console.WriteLine("Item-FileIndex: " + item.FileIndex);
                     break;
             }
             UInt16 propertyLists = 0;
             if(item.IsRuneword)
             {
                 item.RunewordId = reader.ReadUInt32(12);
-                if (writeConsole) { Console.WriteLine("Item-RunewordId: " + item.RunewordId); }
+                if (writeConsole) Console.WriteLine("Item-RunewordId: " + item.RunewordId);
                 propertyLists |= (UInt16)(1 << (reader.ReadUInt16(4) + 1));
                 //?
             }
             if(item.IsPersonalized)
             {
                 item.PlayerName = ReadPlayerName(reader);
-                if (writeConsole) { Console.WriteLine("Item-PlayerName: " + item.PlayerName); }
+                if (writeConsole) Console.WriteLine("Item-PlayerName: " + item.PlayerName);
             }
             if(item.Code.Trim() == "tbk" || item.Code.Trim() == "ibk")
             {
                 item.MagicSuffixIds[0] = reader.ReadByte(5);
-                if (writeConsole) { Console.WriteLine("Item-MagicSuffixIds: " + item.MagicSuffixIds); }
+                if (writeConsole) Console.WriteLine("Item-MagicSuffixIds: " + item.MagicSuffixIds);
             }
             item.HasRealmData = reader.ReadBit();
-            if (writeConsole) { Console.WriteLine("Item-HasRealmData: " + item.HasRealmData); }
+            if (writeConsole) Console.WriteLine("Item-HasRealmData: " + item.HasRealmData);
             if (item.HasRealmData)
             {
                 reader.ReadBits(96);
-                if (writeConsole) { Console.WriteLine("Item-RealmData: " + item.RealmData); }
+                if (writeConsole) Console.WriteLine("Item-RealmData: " + item.RealmData);
             }
             ItemStatCostTXT itemStatCostTXT = Core.TXT.ItemStatCostTXT;
-            if (writeConsole) { Console.WriteLine("Item-itemStatCostTXT: " + itemStatCostTXT); }
+            if (writeConsole) Console.WriteLine("Item-itemStatCostTXT: " + itemStatCostTXT);
             TXTRow row = Core.TXT.ItemsTXT.GetByCode(item.Code);
-            if (writeConsole) { Console.WriteLine("row: " + row); }
+            if (writeConsole) Console.WriteLine("row: " + row);
             bool isArmor = Core.TXT.ItemsTXT.IsArmor(item.Code);
-            if (writeConsole) { Console.WriteLine("isArmor: " + isArmor); }
+            if (writeConsole) Console.WriteLine("isArmor: " + isArmor);
             bool isWeapon = Core.TXT.ItemsTXT.IsWeapon(item.Code);
-            if (writeConsole) { Console.WriteLine("isWeapon: " + isWeapon); }
+            if (writeConsole) Console.WriteLine("isWeapon: " + isWeapon);
             bool isStackable = row["stackable"].ToBool();
-            if (writeConsole) { Console.WriteLine("isStackable: " + isStackable); }
+            if (writeConsole) Console.WriteLine("isStackable: " + isStackable);
             if (isArmor)
             {
                 //why do i need this cast?
                 item.Armor = (UInt16)(reader.ReadUInt16(11) + itemStatCostTXT["armorclass"]["Save Add"].ToUInt16());
-                if (writeConsole) { Console.WriteLine("Item-Armor: " + item.Armor); }
+                if (writeConsole) Console.WriteLine("Item-Armor: " + item.Armor);
             }
             if(isArmor || isWeapon)
             {
                 var maxDurabilityStat = itemStatCostTXT["maxdurability"];
                 var durabilityStat = itemStatCostTXT["maxdurability"];
                 item.MaxDurability = (UInt16)(reader.ReadUInt16(maxDurabilityStat["Save Bits"].ToInt32()) + maxDurabilityStat["Save Add"].ToUInt16());
-                if (writeConsole) { Console.WriteLine("Item-MaxDurability: " + item.MaxDurability); }
+                if (writeConsole) Console.WriteLine("Item-MaxDurability: " + item.MaxDurability);
                 if (item.MaxDurability > 0)
                 {
                     item.Durability = (UInt16)(reader.ReadUInt16(durabilityStat["Save Bits"].ToInt32()) + durabilityStat["Save Add"].ToUInt16());
-                    if (writeConsole) { Console.WriteLine("Item-Durability: " + item.Durability); }
+                    if (writeConsole) Console.WriteLine("Item-Durability: " + item.Durability);
                     //what is this?
                     reader.ReadBit();
                 }
@@ -490,18 +487,18 @@ namespace D2SLib.Model.Save
             if(isStackable)
             {
                 item.Quantity = reader.ReadUInt16(9);
-                if (writeConsole) { Console.WriteLine("Item-Quantity: " + item.Quantity); }
+                if (writeConsole) Console.WriteLine("Item-Quantity: " + item.Quantity);
             }
             if(item.IsSocketed)
             {
                 item.TotalNumberOfSockets = reader.ReadByte(4);
-                if (writeConsole) { Console.WriteLine("Item-TotalNumberOfSockets: " + item.TotalNumberOfSockets); }
+                if (writeConsole) Console.WriteLine("Item-TotalNumberOfSockets: " + item.TotalNumberOfSockets);
             }
             item.SetItemMask = 0;
             if(item.Quality == ItemQuality.Set)
             {
                 item.SetItemMask = reader.ReadByte(5);
-                if (writeConsole) { Console.WriteLine("Item-SetItemMask: " + item.SetItemMask); }
+                if (writeConsole) Console.WriteLine("Item-SetItemMask: " + item.SetItemMask);
                 propertyLists |= item.SetItemMask;
             }
             item.StatLists.Add(ItemStatList.Read(reader));
@@ -603,7 +600,7 @@ namespace D2SLib.Model.Save
                 if (item.MaxDurability > 0)
                 {
                     writer.WriteUInt16((UInt16)(item.Durability - durabilityStat["Save Add"].ToUInt16()), durabilityStat["Save Bits"].ToInt32());
-                    ////what is this?
+                    //what is this?
                     writer.WriteBit(false);
                 }
             }

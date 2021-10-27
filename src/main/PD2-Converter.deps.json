@@ -6,15 +6,15 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v3.1": {
-      "D2SLib/1.0.2": {
+      "PD2-Converter/1.0.2": {
         "runtime": {
-          "D2SLib.dll": {}
+          "PD2-Converter.dll": {}
         }
       }
     }
   },
   "libraries": {
-    "D2SLib/1.0.2": {
+    "PD2-Converter/1.0.2": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

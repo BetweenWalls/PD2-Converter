@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Nullable></Nullable>
+    <Company />
+    <Authors>BetweenWalls, dschu012</Authors>
+    <PackageTags>d2s d2i diablo-ii diablo2 d2r pd2 projectd2 project-diablo-ii d2x sss</PackageTags>
+    <Description>Read and write Diablo 2 saves between vanilla and PD2. Supports characters from v1.10+ and stash files from PlugY v11.02+ Supports .d2s, .d2x, and .sss files.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/BetweenWalls/PD2-Converter</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Version>1.0.2</Version>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+</Project>
