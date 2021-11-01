@@ -1,12 +1,11 @@
-﻿using D2SLib;
-using D2SLib.IO;
+﻿using D2SLib.IO;
 using D2SLib.Model.TXT;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
+//using System.Text.Json.Serialization;
 
 namespace D2SLib.Model.Save
 {
@@ -122,7 +121,7 @@ namespace D2SLib.Model.Save
     public class Item
     {
         public UInt16? Header { get; set; }
-        [JsonIgnore]
+        //[JsonIgnore]
         public BitArray? Flags { get; set; }
         public string Version { get; set; }
         public ItemMode Mode { get; set; }
@@ -149,9 +148,9 @@ namespace D2SLib.Model.Save
         public UInt16 RarePrefixId { get; set; }
         public UInt16 RareSuffixId { get; set; }
         public UInt32 RunewordId { get; set; }
-        [JsonIgnore]
+        //[JsonIgnore]
         public bool HasRealmData { get; set; }
-        [JsonIgnore]
+        //[JsonIgnore]
         public UInt32[] RealmData { get; set; } = new UInt32[3];
         public UInt16 Armor { get; set; }
         public UInt16 MaxDurability { get; set; }

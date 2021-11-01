@@ -1,7 +1,7 @@
-﻿using D2SLib;
-using D2SLib.Model.Save;
+﻿using D2SLib.Model.Save;
 using D2SLib.Model.TXT;
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace D2SLib
@@ -9,10 +9,10 @@ namespace D2SLib
     public static class Globals
     {
         //public static readonly string PROJECT_DIRECTORY = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;    // debug executable
-        public static readonly string PROJECT_DIRECTORY = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName;   // release executable
-        public static readonly string TEXT_DIR = PROJECT_DIRECTORY + @"\src\main\TEXT\";
-        public static readonly string INPUT_DIR = PROJECT_DIRECTORY + @"\src\main\input\";
-        public static readonly string OUTPUT_DIR = PROJECT_DIRECTORY + @"\src\main\output\";
+        public static string PROJECT_DIRECTORY;
+        public static string TEXT_DIR;
+        public static string INPUT_DIR;
+        public static string OUTPUT_DIR;
         public static readonly string CFE = ".d2s";    // character file extension
         public static readonly string MOST_RECENT_SEASON = "season 3";
         public static TXT txt_vanilla = new TXT();
@@ -37,6 +37,32 @@ namespace D2SLib
         {
             try
             {
+                // Get the directory of the executing EXE
+                var mainModule = Process.GetCurrentProcess().MainModule;
+                var executingDirectory = Path.GetDirectoryName(mainModule.FileName);
+
+                // Set the working directory in case somewhere we're not specifying explicit paths
+                Directory.SetCurrentDirectory(executingDirectory);
+
+                // Set directories
+                Globals.PROJECT_DIRECTORY = executingDirectory;
+                Globals.TEXT_DIR = Globals.PROJECT_DIRECTORY + @"\TEXT\";
+                Globals.INPUT_DIR = Globals.PROJECT_DIRECTORY + @"\input\";
+                Globals.OUTPUT_DIR = Globals.PROJECT_DIRECTORY + @"\output\";
+
+                // Check for pre-reqs
+                if (!Directory.Exists(Globals.TEXT_DIR))
+                {
+                    Console.WriteLine("Failed to find required TEXT directory: {0}", Globals.TEXT_DIR);
+                    Console.WriteLine("Press enter to close.");
+                    Console.ReadLine();
+                    return;
+                }
+
+                // Create directories
+                Directory.CreateDirectory(Globals.INPUT_DIR);
+                Directory.CreateDirectory(Globals.OUTPUT_DIR);
+
                 Globals.txt_vanilla.ItemStatCostTXT = ItemStatCostTXT.Read(Globals.TEXT_DIR + @"vanilla\ItemStatCost.txt");
                 Globals.txt_vanilla.ItemsTXT.ArmorTXT = ArmorTXT.Read(Globals.TEXT_DIR + @"vanilla\Armor.txt");
                 Globals.txt_vanilla.ItemsTXT.WeaponsTXT = WeaponsTXT.Read(Globals.TEXT_DIR + @"vanilla\Weapons.txt");
