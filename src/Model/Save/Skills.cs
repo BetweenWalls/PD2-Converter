@@ -73,7 +73,7 @@ namespace D2SLib.Model.Save
         public static Skill Read(byte[] bytes)
         {
             Skill skill = new Skill();
-            skill.Id = BitConverter.ToUInt32(bytes);
+            skill.Id = BitConverter.ToUInt32(bytes, 0);
             return skill;
         }
 

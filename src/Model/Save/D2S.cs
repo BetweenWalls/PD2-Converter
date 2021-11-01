@@ -1,12 +1,7 @@
 ﻿using D2SLib.IO;
-using D2SLib.Model.Save;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
+//using System.Text.Json.Serialization;
 
 namespace D2SLib.Model.Save
 {
@@ -21,15 +16,15 @@ namespace D2SLib.Model.Save
         //0x0024
         public Status Status { get; set; }
         //0x0025
-        [JsonIgnore]
+        //[JsonIgnore]
         public byte Progression { get; set; }
         //0x0026 [unk = 0x0, 0x0]
-        [JsonIgnore]
+        //[JsonIgnore]
         public byte[]? Unk0x0026 { get; set; }
         //0x0028
         public byte ClassId { get; set; }
         //0x0029 [unk = 0x10, 0x1E]
-        [JsonIgnore]
+        //[JsonIgnore]
         public byte[]? Unk0x0029 { get; set; }
         //0x002b
         public byte Level { get; set; }
@@ -38,7 +33,7 @@ namespace D2SLib.Model.Save
         //0x0030
         public UInt32 LastPlayed { get; set; }
         //0x0034 [unk = 0xff, 0xff, 0xff, 0xff]
-        [JsonIgnore]
+        //[JsonIgnore]
         public byte[]? Unk0x0034 { get; set; }
         //0x0038
         public Skill[] AssignedSkills { get; set; }
@@ -57,12 +52,12 @@ namespace D2SLib.Model.Save
         //0x00ab
         public UInt32 MapId { get; set; }
         //0x00af [unk = 0x0, 0x0]
-        [JsonIgnore]
+        //[JsonIgnore]
         public byte[]? Unk0x00af { get; set; }
         //0x00b1
         public Mercenary Mercenary { get; set; }
         //0x00bf [unk = 0x0] (server related data)
-        [JsonIgnore]
+        //[JsonIgnore]
         public byte[]? RealmData { get; set; }
         //0x014b
         public QuestsSection Quests { get; set; }

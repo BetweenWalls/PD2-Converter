@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <Nullable></Nullable>
     <Company />
     <Authors>BetweenWalls, dschu012</Authors>
@@ -14,5 +14,12 @@
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />
+    <LangVersion>8</LangVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
+<!--
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="XCOPY $(ProjectDir)main\TEXT\* $(ProjectDir)$(OutDir)\TEXT\ /E /Y" />
+  </Target>
+-->
 </Project>

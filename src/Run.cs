@@ -1,8 +1,8 @@
-﻿using D2SLib;
-using D2SLib.Model.Save;
+﻿using D2SLib.Model.Save;
 using D2SLib.Model.TXT;
 using System;
 using System.IO;
+//using System.Diagnostics;
 
 namespace D2SLib
 {
@@ -37,6 +37,34 @@ namespace D2SLib
         {
             try
             {
+                /*
+                // TODO: define relative paths here instead of directly in Globals class?
+                // Get the directory of the executing EXE
+                var mainModule = Process.GetCurrentProcess().MainModule;
+                var executingDirectory = Path.GetDirectoryName(mainModule.FileName);
+
+                // Set the working directory in case somewhere we're not specifying explicit paths
+                Directory.SetCurrentDirectory(executingDirectory);
+
+                // Set directories
+                Globals.PROJECT_DIRECTORY = executingDirectory;
+                Globals.TEXT_DIR = Globals.PROJECT_DIRECTORY + @"\TEXT\";
+                Globals.INPUT_DIR = Globals.PROJECT_DIRECTORY + @"\input\";
+                Globals.OUTPUT_DIR = Globals.PROJECT_DIRECTORY + @"\output\";
+
+                // Check for pre-reqs
+                if (!Directory.Exists(Globals.TEXT_DIR))
+                {
+                    Console.WriteLine("Failed to find required TEXT directory: {0}", Globals.TEXT_DIR);
+                    Console.WriteLine("Press enter to close.");
+                    Console.ReadLine();
+                    return;
+                }
+
+                // Create directories
+                Directory.CreateDirectory(Globals.INPUT_DIR);
+                Directory.CreateDirectory(Globals.OUTPUT_DIR);
+                */
                 Globals.txt_vanilla.ItemStatCostTXT = ItemStatCostTXT.Read(Globals.TEXT_DIR + @"vanilla\ItemStatCost.txt");
                 Globals.txt_vanilla.ItemsTXT.ArmorTXT = ArmorTXT.Read(Globals.TEXT_DIR + @"vanilla\Armor.txt");
                 Globals.txt_vanilla.ItemsTXT.WeaponsTXT = WeaponsTXT.Read(Globals.TEXT_DIR + @"vanilla\Weapons.txt");
