@@ -8,3 +8,5 @@ Supports all PD2 characters and vanilla characters from v1.10+ (.d2s files), as 
 To use, run PD2-Converter.exe (in *\src\main*). Character/stash files will be read from the input folder (*\src\main\input*) and saved in the output folder (*src\main\output*).
 
 If you encounter bugs, let me know on reddit ([u/BetweenWalls](https://www.reddit.com/message/compose/?to=BetweenWalls)) or discord (@BetweenWalls#2390), or just submit an issue here.
+
+**Note:** There is currently an issue that prevents vanilla & season 1 files with *Standard of Heroes* from being converted.
