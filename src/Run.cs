@@ -14,12 +14,12 @@ namespace D2SLib
         public static readonly string INPUT_DIR = PROJECT_DIRECTORY + @"\src\main\input\";
         public static readonly string OUTPUT_DIR = PROJECT_DIRECTORY + @"\src\main\output\";
         public static readonly string CFE = ".d2s";    // character file extension
-        public static readonly string MOST_RECENT_SEASON = "3";
+        public static readonly string MOST_RECENT_SEASON = "4";
         public static TXT txt_vanilla = new TXT();
         public static TXT txt_pd2_s1 = new TXT();
         public static TXT txt_pd2_s2 = new TXT();
         public static TXT txt_pd2_s3 = new TXT();
-        //public static TXT txt_pd2_s4 = new TXT();
+        public static TXT txt_pd2_s4 = new TXT();
         public static bool writeConsole_D2SRead = false;            // temporary, for debugging
         public static bool writeConsole_ItemsRead = false;          // temporary, for debugging
         public static bool writeConsole_ItemsReadComplete = false;  // temporary, for debugging
@@ -83,10 +83,10 @@ namespace D2SLib
                 Globals.txt_pd2_s3.ItemsTXT.ArmorTXT = ArmorTXT.Read(Globals.TEXT_DIR + @"pd2_s3\Armor.txt");
                 Globals.txt_pd2_s3.ItemsTXT.WeaponsTXT = WeaponsTXT.Read(Globals.TEXT_DIR + @"pd2_s3\Weapons.txt");
                 Globals.txt_pd2_s3.ItemsTXT.MiscTXT = MiscTXT.Read(Globals.TEXT_DIR + @"pd2_s3\Misc.txt");
-                //Globals.txt_pd2_s4.ItemStatCostTXT = ItemStatCostTXT.Read(Globals.text_dir + @"pd2_s4\ItemStatCost.txt");
-                //Globals.txt_pd2_s4.ItemsTXT.ArmorTXT = ArmorTXT.Read(Globals.text_dir + @"pd2_s4\Armor.txt");
-                //Globals.txt_pd2_s4.ItemsTXT.WeaponsTXT = WeaponsTXT.Read(Globals.text_dir + @"pd2_s4\Weapons.txt");
-                //Globals.txt_pd2_s4.ItemsTXT.MiscTXT = MiscTXT.Read(Globals.text_dir + @"pd2_s4\Misc.txt");
+                Globals.txt_pd2_s4.ItemStatCostTXT = ItemStatCostTXT.Read(Globals.TEXT_DIR + @"pd2_s4\ItemStatCost.txt");
+                Globals.txt_pd2_s4.ItemsTXT.ArmorTXT = ArmorTXT.Read(Globals.TEXT_DIR + @"pd2_s4\Armor.txt");
+                Globals.txt_pd2_s4.ItemsTXT.WeaponsTXT = WeaponsTXT.Read(Globals.TEXT_DIR + @"pd2_s4\Weapons.txt");
+                Globals.txt_pd2_s4.ItemsTXT.MiscTXT = MiscTXT.Read(Globals.TEXT_DIR + @"pd2_s4\Misc.txt");
             }
             catch
             {
@@ -115,7 +115,7 @@ namespace D2SLib
                 if (input_forced_version == "1") Globals.force_convert_from = "pd2_s1";
                 else if (input_forced_version == "2") Globals.force_convert_from = "pd2_s2";
                 else if (input_forced_version == "3") Globals.force_convert_from = "pd2_s3";
-                //else if (input_forced_version == "4") Globals.force_convert_from = "pd2_s4";
+                else if (input_forced_version == "4") Globals.force_convert_from = "pd2_s4";
                 else if (input_forced_version == "\\") return;
                 if (Globals.force_convert_from != "") Console.WriteLine($"Files will be assumed to be from season {input_forced_version}.");
                 else Console.WriteLine("File formats will be auto-detected.");
@@ -181,14 +181,19 @@ namespace D2SLib
                 }
             }
 
-            Console.WriteLine();
-            if (num_files == 0 || (num_files == 1 && found_default)) Console.WriteLine($"No files found.\r\nPlace files in {Globals.INPUT_DIR}");
-            if (Globals.files_converted > 0) Console.WriteLine($"Converted files were saved in {Globals.OUTPUT_DIR.Substring(Globals.PROJECT_DIRECTORY.Length, Globals.OUTPUT_DIR.Length - Globals.PROJECT_DIRECTORY.Length - 1)}");
-            if (Globals.files_ignored > 0 && Globals.force_convert_from != "") Console.WriteLine($"Some files could not be converted. (all files were assumed to be from S{Globals.force_convert_from.Substring(Globals.force_convert_from.Length - 1)})");
-            else if (Globals.files_ignored > 0 && Globals.force_convert_from == "") Console.WriteLine("Some files could not be converted. Consider leaving feedback.");
+            if (input_name != "")
+            {
+                Console.WriteLine();
+                if (num_files == 0 || (num_files == 1 && found_default)) Console.WriteLine($"No files found.\r\nPlace files in {Globals.INPUT_DIR}");
+                if (Globals.files_converted > 0) Console.WriteLine($"Converted files were saved in {Globals.OUTPUT_DIR.Substring(Globals.PROJECT_DIRECTORY.Length, Globals.OUTPUT_DIR.Length - Globals.PROJECT_DIRECTORY.Length - 1)}");
+                if (Globals.files_ignored > 0 && Globals.force_convert_from != "") Console.WriteLine($"Some files could not be converted. (all files were assumed to be from S{Globals.force_convert_from.Substring(Globals.force_convert_from.Length - 1)})");
+                else if (Globals.files_ignored > 0 && Globals.force_convert_from == "") Console.WriteLine("Some files could not be converted. Consider leaving feedback.");
+            }
 
             Console.Write("Press enter to close.");
             Console.ReadLine();
+
+            // TODO: fix Standard of Heroes from vanilla/S1 to S2+... fails when trying to read? So are the text files inadequate somehow? Or is it something else? Text differences: unique=1, stackable=0, minstack=0, maxstack=0, spawnstack=0 -> unique=0, stackable=1, minstack=1, maxstack=50, spawnstack=1
         }
 
         public static void ConvertCharacter(string input_name)
@@ -205,7 +210,7 @@ namespace D2SLib
                 if (Globals.convert_from == "pd2_s1") Core.TXT = Globals.txt_pd2_s1;
                 else if (Globals.convert_from == "pd2_s2") Core.TXT = Globals.txt_pd2_s2;
                 else if (Globals.convert_from == "pd2_s3") Core.TXT = Globals.txt_pd2_s3;
-                //else if (Globals.convert_from == "pd2_s4") Core.TXT = Globals.txt_pd2_s4;
+                else if (Globals.convert_from == "pd2_s4") Core.TXT = Globals.txt_pd2_s4;
                 try
                 {
                     character = Core.ReadD2S(File.ReadAllBytes(Globals.INPUT_DIR + input_name + Globals.CFE));
@@ -251,7 +256,16 @@ namespace D2SLib
                             }
                             catch
                             {
-                                Globals.convert_from = "?";
+                                Globals.convert_from = "pd2_s4";
+                                Core.TXT = Globals.txt_pd2_s4;
+                                try
+                                {
+                                    character = Core.ReadD2S(File.ReadAllBytes(Globals.INPUT_DIR + input_name + Globals.CFE));
+                                }
+                                catch
+                                {
+                                    Globals.convert_from = "?";
+                                }
                             }
                         }
                     }
@@ -284,7 +298,7 @@ namespace D2SLib
                     }
                     */
                 }
-                else Core.TXT = Globals.txt_pd2_s3;
+                else Core.TXT = Globals.txt_pd2_s4;
 
                 try
                 {
@@ -326,7 +340,7 @@ namespace D2SLib
                 if (Globals.convert_from == "pd2_s1") Core.TXT = Globals.txt_pd2_s1;
                 else if (Globals.convert_from == "pd2_s2") Core.TXT = Globals.txt_pd2_s2;
                 else if (Globals.convert_from == "pd2_s3") Core.TXT = Globals.txt_pd2_s3;
-                //else if (Globals.convert_from == "pd2_s4") Core.TXT = Globals.txt_pd2_s4;
+                else if (Globals.convert_from == "pd2_s4") Core.TXT = Globals.txt_pd2_s4;
                 try
                 {
                     stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
@@ -370,7 +384,16 @@ namespace D2SLib
                             }
                             catch
                             {
-                                Globals.convert_from = "?";
+                                Globals.convert_from = "pd2_s4";
+                                Core.TXT = Globals.txt_pd2_s4;
+                                try
+                                {
+                                    stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                                }
+                                catch
+                                {
+                                    Globals.convert_from = "?";
+                                }
                             }
                         }
                     }
@@ -380,7 +403,7 @@ namespace D2SLib
             if (Globals.convert_from != "?")
             {
                 Console.Write($"[{Globals.convert_from}]... ");
-                Core.TXT = Globals.txt_pd2_s3;
+                Core.TXT = Globals.txt_pd2_s4;
                 try
                 {
                     File.WriteAllBytes(Globals.OUTPUT_DIR + stash_name, Core.WriteD2I(stash, stash_version, type));
