@@ -684,6 +684,7 @@ namespace D2SLib.Model.Save
                     ItemStat.Write(writer, itemStatList.Stats[++i]);
                     ItemStat.Write(writer, itemStatList.Stats[++i]);
                 }
+                // TODO: fix incompatible changes made to weapons' base damage?
             }
             writer.WriteUInt16(0x1ff, 9);
         }

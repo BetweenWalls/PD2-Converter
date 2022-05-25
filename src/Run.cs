@@ -20,6 +20,8 @@ namespace D2SLib
         public static TXT txt_pd2_s2 = new TXT();
         public static TXT txt_pd2_s3 = new TXT();
         public static TXT txt_pd2_s4 = new TXT();
+        public static TXT txt_pd2_s5 = new TXT();
+        public static TXT txt_pd2_s6 = new TXT();
         public static bool writeConsole_D2SRead = false;            // temporary, for debugging
         public static bool writeConsole_ItemsRead = false;          // temporary, for debugging
         public static bool writeConsole_ItemsReadComplete = false;  // temporary, for debugging
@@ -67,6 +69,8 @@ namespace D2SLib
                 Directory.CreateDirectory(Globals.INPUT_DIR);
                 Directory.CreateDirectory(Globals.OUTPUT_DIR);
                 */
+
+                // TODO: Reimplement variables via a less hardcoded method to reduce the number of lines it takes to accomplish the same thing
                 Globals.txt_vanilla.ItemStatCostTXT = ItemStatCostTXT.Read(Globals.TEXT_DIR + @"vanilla\ItemStatCost.txt");
                 Globals.txt_vanilla.ItemsTXT.ArmorTXT = ArmorTXT.Read(Globals.TEXT_DIR + @"vanilla\Armor.txt");
                 Globals.txt_vanilla.ItemsTXT.WeaponsTXT = WeaponsTXT.Read(Globals.TEXT_DIR + @"vanilla\Weapons.txt");
@@ -87,6 +91,14 @@ namespace D2SLib
                 Globals.txt_pd2_s4.ItemsTXT.ArmorTXT = ArmorTXT.Read(Globals.TEXT_DIR + @"pd2_s4\Armor.txt");
                 Globals.txt_pd2_s4.ItemsTXT.WeaponsTXT = WeaponsTXT.Read(Globals.TEXT_DIR + @"pd2_s4\Weapons.txt");
                 Globals.txt_pd2_s4.ItemsTXT.MiscTXT = MiscTXT.Read(Globals.TEXT_DIR + @"pd2_s4\Misc.txt");
+                Globals.txt_pd2_s5.ItemStatCostTXT = ItemStatCostTXT.Read(Globals.TEXT_DIR + @"pd2_s5\ItemStatCost.txt");
+                Globals.txt_pd2_s5.ItemsTXT.ArmorTXT = ArmorTXT.Read(Globals.TEXT_DIR + @"pd2_s5\Armor.txt");
+                Globals.txt_pd2_s5.ItemsTXT.WeaponsTXT = WeaponsTXT.Read(Globals.TEXT_DIR + @"pd2_s5\Weapons.txt");
+                Globals.txt_pd2_s5.ItemsTXT.MiscTXT = MiscTXT.Read(Globals.TEXT_DIR + @"pd2_s5\Misc.txt");
+                Globals.txt_pd2_s6.ItemStatCostTXT = ItemStatCostTXT.Read(Globals.TEXT_DIR + @"pd2_s6\ItemStatCost.txt");
+                Globals.txt_pd2_s6.ItemsTXT.ArmorTXT = ArmorTXT.Read(Globals.TEXT_DIR + @"pd2_s6\Armor.txt");
+                Globals.txt_pd2_s6.ItemsTXT.WeaponsTXT = WeaponsTXT.Read(Globals.TEXT_DIR + @"pd2_s6\Weapons.txt");
+                Globals.txt_pd2_s6.ItemsTXT.MiscTXT = MiscTXT.Read(Globals.TEXT_DIR + @"pd2_s6\Misc.txt");
             }
             catch
             {
@@ -112,10 +124,13 @@ namespace D2SLib
                 Console.WriteLine($"If all files are from a specific season, conversion speed can be improved if that season's format is assumed.");
                 Console.Write($"Enter a season number (1-{Globals.MOST_RECENT_SEASON}) to assume, or leave blank to auto-detect: ");
                 string input_forced_version = Console.ReadLine();
+                // TODO: Reimplement variables via a less hardcoded method to reduce the number of lines it takes to accomplish the same thing
                 if (input_forced_version == "1") Globals.force_convert_from = "pd2_s1";
                 else if (input_forced_version == "2") Globals.force_convert_from = "pd2_s2";
                 else if (input_forced_version == "3") Globals.force_convert_from = "pd2_s3";
                 else if (input_forced_version == "4") Globals.force_convert_from = "pd2_s4";
+                else if (input_forced_version == "5") Globals.force_convert_from = "pd2_s5";
+                else if (input_forced_version == "6") Globals.force_convert_from = "pd2_s6";
                 else if (input_forced_version == "\\") return;
                 if (Globals.force_convert_from != "") Console.WriteLine($"Files will be assumed to be from season {input_forced_version}.");
                 else Console.WriteLine("File formats will be auto-detected.");
@@ -181,7 +196,7 @@ namespace D2SLib
                 }
             }
 
-            if (input_name != "")
+            if (input_name == "")
             {
                 Console.WriteLine();
                 if (num_files == 0 || (num_files == 1 && found_default)) Console.WriteLine($"No files found.\r\nPlace files in {Globals.INPUT_DIR}");
@@ -198,6 +213,7 @@ namespace D2SLib
 
         public static void ConvertCharacter(string input_name)
         {
+            // TODO: Reimplement try-catch blocks via a less hardcoded method to reduce the number of lines it takes to accomplish the same thing
             Console.Write($"Reading {input_name}{Globals.CFE}... ");
 
             D2S character = new D2S();
@@ -211,6 +227,8 @@ namespace D2SLib
                 else if (Globals.convert_from == "pd2_s2") Core.TXT = Globals.txt_pd2_s2;
                 else if (Globals.convert_from == "pd2_s3") Core.TXT = Globals.txt_pd2_s3;
                 else if (Globals.convert_from == "pd2_s4") Core.TXT = Globals.txt_pd2_s4;
+                else if (Globals.convert_from == "pd2_s5") Core.TXT = Globals.txt_pd2_s5;
+                else if (Globals.convert_from == "pd2_s6") Core.TXT = Globals.txt_pd2_s6;
                 try
                 {
                     character = Core.ReadD2S(File.ReadAllBytes(Globals.INPUT_DIR + input_name + Globals.CFE));
@@ -264,7 +282,34 @@ namespace D2SLib
                                 }
                                 catch
                                 {
-                                    Globals.convert_from = "?";
+                                    Globals.convert_from = "pd2_s4";
+                                    Core.TXT = Globals.txt_pd2_s4;
+                                    try
+                                    {
+                                        character = Core.ReadD2S(File.ReadAllBytes(Globals.INPUT_DIR + input_name + Globals.CFE));
+                                    }
+                                    catch
+                                    {
+                                        Globals.convert_from = "pd2_s5";
+                                        Core.TXT = Globals.txt_pd2_s5;
+                                        try
+                                        {
+                                            character = Core.ReadD2S(File.ReadAllBytes(Globals.INPUT_DIR + input_name + Globals.CFE));
+                                        }
+                                        catch
+                                        {
+                                            Globals.convert_from = "pd2_s6";
+                                            Core.TXT = Globals.txt_pd2_s6;
+                                            try
+                                            {
+                                                character = Core.ReadD2S(File.ReadAllBytes(Globals.INPUT_DIR + input_name + Globals.CFE));
+                                            }
+                                            catch
+                                            {
+                                                Globals.convert_from = "?";
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -298,7 +343,7 @@ namespace D2SLib
                     }
                     */
                 }
-                else Core.TXT = Globals.txt_pd2_s4;
+                else Core.TXT = Globals.txt_pd2_s6;     // attempts to convert to most recent version
 
                 try
                 {
@@ -328,6 +373,7 @@ namespace D2SLib
 
         public static void ConvertStash(string stash_name, string type)
         {
+            // TODO: Reimplement try-catch blocks via a less hardcoded method to reduce the number of lines it takes to accomplish the same thing
             Console.Write($"Reading {stash_name}... ");
 
             D2I stash = new D2I();
@@ -341,6 +387,8 @@ namespace D2SLib
                 else if (Globals.convert_from == "pd2_s2") Core.TXT = Globals.txt_pd2_s2;
                 else if (Globals.convert_from == "pd2_s3") Core.TXT = Globals.txt_pd2_s3;
                 else if (Globals.convert_from == "pd2_s4") Core.TXT = Globals.txt_pd2_s4;
+                else if (Globals.convert_from == "pd2_s5") Core.TXT = Globals.txt_pd2_s5;
+                else if (Globals.convert_from == "pd2_s6") Core.TXT = Globals.txt_pd2_s6;
                 try
                 {
                     stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
@@ -392,7 +440,25 @@ namespace D2SLib
                                 }
                                 catch
                                 {
-                                    Globals.convert_from = "?";
+                                    Globals.convert_from = "pd2_s5";
+                                    Core.TXT = Globals.txt_pd2_s5;
+                                    try
+                                    {
+                                        stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                                    }
+                                    catch
+                                    {
+                                        Globals.convert_from = "pd2_s6";
+                                        Core.TXT = Globals.txt_pd2_s6;
+                                        try
+                                        {
+                                            stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                                        }
+                                        catch
+                                        {
+                                            Globals.convert_from = "?";
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -403,7 +469,7 @@ namespace D2SLib
             if (Globals.convert_from != "?")
             {
                 Console.Write($"[{Globals.convert_from}]... ");
-                Core.TXT = Globals.txt_pd2_s4;
+                Core.TXT = Globals.txt_pd2_s6;     // attempts to convert to most recent version   ...TODO: Why isn't this specified for non-vanilla conversions only like the equivalent line in the ConvertCharacter() function? Did I never enable ConvertStash() to convert PD2 stash files to vanilla stash files?
                 try
                 {
                     File.WriteAllBytes(Globals.OUTPUT_DIR + stash_name, Core.WriteD2I(stash, stash_version, type));
