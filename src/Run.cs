@@ -14,7 +14,7 @@ namespace D2SLib
         public static readonly string INPUT_DIR = PROJECT_DIRECTORY + @"\src\main\input\";
         public static readonly string OUTPUT_DIR = PROJECT_DIRECTORY + @"\src\main\output\";
         public static readonly string CFE = ".d2s";    // character file extension
-        public static readonly string MOST_RECENT_SEASON = "4";
+        public static readonly string MOST_RECENT_SEASON = "5";
         public static TXT txt_vanilla = new TXT();
         public static TXT txt_pd2_s1 = new TXT();
         public static TXT txt_pd2_s2 = new TXT();
