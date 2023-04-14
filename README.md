@@ -17,7 +17,7 @@ There is currently an issue that prevents vanilla & season 1 files with *Standar
 
 Although primarily designed for converting vanilla or PD2 characters & stashes to the most recent PD2 season, characters may also be converted in the reverse direction. When converting characters from PD2 to vanilla, items or item affixes that don't exist in vanilla will prevent files with them from being converted. While this "reverse" conversion seems to otherwise work correctly for loading/playing those characters in the vanilla game, other programs (such as Hero Editor) may not load them correctly. When using such programs to edit characters from PD2, the characters should be converted to vanilla and saved from within the vanilla game prior to being edited.
 
-This program is unnecessary for converting season 3+ characters since there have been no major formatting differences since s2.
+<!--This program is unnecessary for converting season 3+ characters since there have been no major formatting differences since s2.-->
 
 ### Feedback
 
