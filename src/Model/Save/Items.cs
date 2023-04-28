@@ -83,6 +83,7 @@ namespace D2SLib.Model.Save
                 itemList.Items.Add(Item.Read(reader, version));
                 if (writeConsole) Console.WriteLine("Item-" + i + " Code: " + itemList.Items[i].Code);
                 if (itemList.Items[i].Quantity > 0) { if (writeConsole) Console.WriteLine("Item-" + i + " Quantity: " + itemList.Items[i].Quantity); }
+                if (itemList.Items[i].Quantity == 0) { itemList.Items[i].Quantity = 1; }
             }
             return itemList;
         }
