@@ -5,7 +5,14 @@ Supports all PD2 characters and vanilla characters from v1.10+ (.d2s files), as 
 
 ### [Download](https://github.com/BetweenWalls/PD2-Converter/archive/main.zip)
 
-To use, run PD2-Converter.exe (in *src\main*) after copying your .d2s/.d2x/.sss files into the input folder (*src\main\input*). Character/stash files will be read from the input folder and saved in the output folder (*src\main\output*).
+### Instructions
+1. Download PD2-Converter-main.zip and extract the files
+2. Copy your character and stash files from your save folder (Diablo II\Save) - the only files that matter are those ending in .d2s or .d2x or .sss
+3. Navigate to PD2-Converter-main\src\main\input and paste your files there
+4. Navigate to PD2-Converter-main\src\main and run PD2-Converter.exe - a command line menu will pop up
+5. For default operation, leave the 3 prompts blank by pressing enter 3 times
+6. Wait for the program to convert your files
+7. Navigate to PD2-Converter-main\src\main\output and copy the converted files from there back into your save folder 
 
 If you want to revert to an older version of PD2 for whatever reason, you can replace your game files with the versions included in the Patches folder.
 
