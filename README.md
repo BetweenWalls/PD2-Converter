@@ -3,6 +3,8 @@ This program converts character/stash files between vanilla and PD2, and updates
 
 Supports all PD2 characters and vanilla characters from v1.10+ (.d2s files), as well as shared/personal stashes from PlugY v11.02+ (.sss and .d2x files). Built from [dschu012's D2SLib](https://github.com/dschu012/D2SLib) repository. Requires .NET framework to run.
 
+I didn't bother separating the source code from the release code, so there are a bunch of extra folders/files that can be ignored.
+
 ### [Download](https://github.com/BetweenWalls/PD2-Converter/archive/main.zip)
 
 ### Instructions
@@ -16,15 +18,22 @@ Supports all PD2 characters and vanilla characters from v1.10+ (.d2s files), as 
 
 If you want to revert to an older version of PD2 for whatever reason, you can replace your game files with the versions included in the Patches folder.
 
-### Notes
+### Errors
+The converter may not work in all cases - if the converter doesn't work for a particular file, you can use the traditional method of reverting to the previous season and dropping whichever items were fundamentally altered after that season. For example, the transition from s6 to s7 saw maps being fundamentally altered to become stackable. If you drop the maps, there's no need to convert anything. If you want to try keeping the maps, transfer them all to another character instead and then use the converter on that character only.
 
-I didn't bother separating the source code from the release code, so there are a bunch of extra folders/files that can be ignored.
+Fundamentally altered items per season:
+* S1: maps, Standard of Heroes
+* S2: maps, any item with Enhanced Damage or Maximum Damage per Level
+* S7: maps (including dungeons & arenas)
 
-There is currently an issue that prevents vanilla & season 1 files with *Standard of Heroes* from being converted to later seasons. Files with personalized items may be prevented from being converted correctly. Additionally, one report mentioned season 2 files with *Mephisto's Soulstone* preventing conversion as well. There may also be some corruption modifiers from earlier PD2 seasons which prevent conversion, but there hasn't been enough testing to confirm which those are.
+The converter may have trouble with:
+* Standard of Heroes (S2 or earlier)
+* Mephisto's Soulstone (S2 or earlier)
+* Personalized items
+* Items with specific corruptions that were removed/changed in later seasons (details unknown)
 
-Although primarily designed for converting vanilla or PD2 characters & stashes to the most recent PD2 season, characters may also be converted in the reverse direction. When converting characters from PD2 to vanilla, items or item affixes that don't exist in vanilla will prevent files with them from being converted. While this "reverse" conversion seems to otherwise work correctly for loading/playing those characters in the vanilla game, other programs (such as Hero Editor) may not load them correctly. When using such programs to edit characters from PD2, the characters should be converted to vanilla and saved from within the vanilla game prior to being edited.
-
-<!--This program is unnecessary for converting season 3+ characters since there have been no major formatting differences since s2.-->
+### Reverse Conversions
+Although primarily designed for converting vanilla or PD2 characters & stashes to the most recent PD2 season, characters may also be converted in the reverse direction. When converting characters from PD2 to vanilla, items or item affixes that don't exist in vanilla will prevent files with them from being converted. While this "reverse" conversion seems to otherwise work correctly for loading/playing those characters in the vanilla game, other programs (such as Hero Editor) may not load them correctly. To fix this issue when using such programs to edit characters from PD2, the characters should be converted to vanilla and *saved from within the vanilla game* prior to being edited.
 
 ### Feedback
 
