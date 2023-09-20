@@ -1,12 +1,15 @@
 ﻿using D2SLib.IO;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 
 namespace D2SLib.Model.Save
 {
     public class D2I
     {
+        //unused
+        public UInt16 ItemCount { get; set; }  // Number of items, only for online pd2 format for .stash and .stash.hc files
         //0x00
         public UInt32 Magic { get; set; }  // "SSS\0" (0x00535353) for .sss files, "CSTM" (0x4D545343) for .d2x files
         //0x04
@@ -17,6 +20,7 @@ namespace D2SLib.Model.Save
         public UInt32 Pages { get; set; }   // Number of pages in the stash data
         //0x0A or 0x0E
         public StashPage[] PageList { get; set; }
+        public ItemList StashItems { get; set; }        // online pd2 only
 
         public static D2I Read(byte[] bytes, UInt32 version, string type)
         {
@@ -24,20 +28,30 @@ namespace D2SLib.Model.Save
             using (BitReader reader = new BitReader(bytes))
             {
                 D2I d2i = new D2I();
-                d2i.Magic = reader.ReadUInt32();
-                d2i.Version = reader.ReadUInt16();
-                if (d2i.Version == 12848 || type == ".d2x") d2i.Gold = reader.ReadUInt32(); // no gold = 12592, gold = 12848
-                d2i.Pages = reader.ReadUInt32();
-                if (writeConsole) Console.WriteLine($"\r\nStash Version: {d2i.Version}");
-                if (writeConsole) Console.WriteLine("Shared Gold: " + d2i.Gold);
-                d2i.PageList = new StashPage[d2i.Pages];
-                for (int p = 0; p < d2i.PageList.Length; p++)
+                if (type == ".stash" || type == ".stash.hc")
                 {
-                    d2i.PageList[p] = new StashPage();
-                    if (writeConsole) Console.Write($"Page {p+1}... ");
-                    d2i.PageList[p] = StashPage.Read(d2i.PageList[p], reader, version);
+                    d2i.PageList[0] = new StashPage();
+                    d2i.PageList[0] = StashPage.Read(d2i.PageList[0], reader, version);
                 }
-                return d2i;
+                else
+                {
+                    d2i.Magic = reader.ReadUInt32();
+                    if (writeConsole) Console.WriteLine($"'Magic' Bytes: {d2i.Magic}");
+                    d2i.Version = reader.ReadUInt16();
+                    if (writeConsole) Console.WriteLine($"Version: {d2i.Version}");
+                    if (d2i.Version == 12848 || type == ".d2x") d2i.Gold = reader.ReadUInt32(); // no gold = 12592, gold = 12848
+                    if (writeConsole) Console.WriteLine($"Gold: {d2i.Gold}");
+                    d2i.Pages = reader.ReadUInt32();
+                    if (writeConsole) Console.WriteLine($"Pages: {d2i.Pages}");
+                    d2i.PageList = new StashPage[d2i.Pages];
+                    for (int p = 0; p < d2i.PageList.Length; p++)
+                    {
+                        d2i.PageList[p] = new StashPage();
+                        if (writeConsole) Console.Write($"Page {p + 1}... ");
+                        d2i.PageList[p] = StashPage.Read(d2i.PageList[p], reader, version);
+                    }
+                }
+                    return d2i;
             }
         }
 
@@ -45,13 +59,20 @@ namespace D2SLib.Model.Save
         {
             using (BitWriter writer = new BitWriter())
             {
-                writer.WriteUInt32(d2i.Magic);  // TODO: check if "SSS\0" or "CSTM" should be specified - d2i.Magic can't be null, can it?
-                writer.WriteUInt16(d2i.Version);
-                if (d2i.Version != 0x3130 || type == ".d2x") writer.WriteUInt32(d2i.Gold);
-                writer.WriteUInt32(d2i.Pages);
-                for (int p = 0; p < d2i.Pages; p++)
+                if (type == ".stash" || type == ".stash.hc")
                 {
-                    writer.WriteBytes(StashPage.Write(d2i.PageList[p], version));
+                    writer.WriteBytes(StashPage.Write(d2i.PageList[0], version));
+                }
+                else
+                {
+                    writer.WriteUInt32(d2i.Magic);  // TODO: check if "SSS\0" or "CSTM" should be specified - d2i.Magic can't be null, can it?
+                    writer.WriteUInt16(d2i.Version);
+                    if (d2i.Version != 0x3130 || type == ".d2x") writer.WriteUInt32(d2i.Gold);
+                    writer.WriteUInt32(d2i.Pages);
+                    for (int p = 0; p < d2i.Pages; p++)
+                    {
+                        writer.WriteBytes(StashPage.Write(d2i.PageList[p], version));
+                    }
                 }
                 return writer.ToArray();
             }

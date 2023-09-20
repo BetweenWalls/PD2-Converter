@@ -9,7 +9,7 @@ namespace D2SLib
     public static class Globals
     {
         //public static readonly string PROJECT_DIRECTORY = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName;    // debug executable
-        public static readonly string PROJECT_DIRECTORY = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName;   // release executable    ...to update, go to Build -> Build Solution, then Build -> Publish PD2-Converter, then press Publish - settings are Release, net48, portable, and C:\Users\Steve\Desktop\Docs\github repositories\PD2-Converter\src\main
+        public static readonly string PROJECT_DIRECTORY = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName;   // release executable    ...to update, go to Build -> Build Solution, then Build -> Publish PD2-Converter, then press Publish - settings are Release, net48, portable, and C:\Users\...\Desktop\Docs\github repositories\PD2-Converter\src\main
         public static readonly string TEXT_DIR = PROJECT_DIRECTORY + @"\src\main\TEXT\";
         public static readonly string INPUT_DIR = PROJECT_DIRECTORY + @"\src\main\input\";
         public static readonly string OUTPUT_DIR = PROJECT_DIRECTORY + @"\src\main\output\";
@@ -33,6 +33,7 @@ namespace D2SLib
         public static string convert_to = "pd2";
         public static string force_convert_from = "";
         public static bool pd2_char_formatting = false;
+        public static bool pd2_stash_formatting = false;          // flag for .stash an .stash.hc files
         public static bool ladder_files_converted = false;
         public static int files_converted = 0;
         public static int files_ignored = 0;
@@ -182,7 +183,7 @@ namespace D2SLib
                 {
                     file_name = files[f].Substring(Globals.INPUT_DIR.Length, files[f].Length - Globals.INPUT_DIR.Length);
                     if (files[f].EndsWith(Globals.CFE)) ConvertCharacter(file_name.Substring(0, file_name.Length - Globals.CFE.Length));
-                    else if (!(files[f].EndsWith(".d2x") || files[f].EndsWith(".sss") || files[f].EndsWith(".key") || files[f].EndsWith(".map") || files[f].EndsWith(".ma0") || files[f].EndsWith(".ma1") || files[f].EndsWith(".ma2") || files[f].EndsWith(".ma3") || file_name == "place files here")) Console.WriteLine($"{file_name} is not a recognized character/stash file.");  // no message shown for other character files (.key, .map, .ma0, .ma1, .ma2, .ma3)
+                    else if (!(files[f].EndsWith(".d2x") || files[f].EndsWith(".sss") || files[f].EndsWith(".stash.hc") || files[f].EndsWith(".stash") || files[f].EndsWith(".key") || files[f].EndsWith(".map") || files[f].EndsWith(".ma0") || files[f].EndsWith(".ma1") || files[f].EndsWith(".ma2") || files[f].EndsWith(".ma3") || file_name == "place files here")) Console.WriteLine($"{file_name} is not a recognized character/stash file.");  // no message shown for other character files (.key, .map, .ma0, .ma1, .ma2, .ma3)
                 }
             }
 
@@ -204,6 +205,8 @@ namespace D2SLib
                         file_name = files[f].Substring(Globals.INPUT_DIR.Length, files[f].Length - Globals.INPUT_DIR.Length);
                         if (files[f].EndsWith(".sss")) ConvertStash(file_name.Substring(0, file_name.Length), ".sss");
                         else if (files[f].EndsWith(".d2x")) ConvertStash(file_name.Substring(0, file_name.Length), ".d2x");
+                        else if (files[f].EndsWith(".stash.hc")) ConvertStash(file_name.Substring(0, file_name.Length), ".stash.hc");
+                        else if (files[f].EndsWith(".stash")) ConvertStash(file_name.Substring(0, file_name.Length), ".stash");
                         else if (file_name == "place files here") found_default = true;
                     }
                 }
@@ -232,6 +235,7 @@ namespace D2SLib
 
             D2S character = new D2S();
             Globals.space = new byte[000];
+            Globals.pd2_stash_formatting = false;
 
             if (Globals.force_convert_from != "")
             {
@@ -254,7 +258,8 @@ namespace D2SLib
                     Globals.convert_from = "?";
                 }
             }
-            else
+
+            if (Globals.force_convert_from == "" || Globals.convert_from == "?")
             {
                 Globals.pd2_char_formatting = false;
                 Globals.convert_from = "vanilla";
@@ -404,6 +409,8 @@ namespace D2SLib
             D2I stash = new D2I();
             UInt16 stash_version = 0x3230;
             Globals.pd2_char_formatting = false;
+            Globals.pd2_stash_formatting = false;
+            if (type == ".stash" || type == ".stash.hc") Globals.pd2_stash_formatting = true;
 
             if (Globals.force_convert_from != "")
             {
@@ -425,7 +432,8 @@ namespace D2SLib
                     Globals.convert_from = "?";
                 }
             }
-            else
+
+            if (Globals.force_convert_from == "" || Globals.convert_from == "?")
             {
                 Globals.convert_from = "vanilla";
                 Core.TXT = Globals.txt_vanilla;

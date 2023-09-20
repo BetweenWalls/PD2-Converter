@@ -8,6 +8,8 @@ namespace D2SLib.Model.Save
 {
     public class StashPage
     {
+        //unused
+        public UInt16 ItemCount { get; set; }  // Number of items, only for online pd2 format for .stash and .stash.hc files
         //0x00
         public UInt16? Header { get; set; }  // "ST" (0x5453 when read as a 16 bit unsigned integer)
         //0x02
@@ -20,29 +22,26 @@ namespace D2SLib.Model.Save
         public static StashPage Read(StashPage page, BitReader reader, UInt32 version)
         {
             Boolean writeConsole = D2SLib.Globals.writeConsole_Stash;
-            version = 0x60;
-            //version = 0x5453;
-            page.Header = reader.ReadUInt16();
-            page.Flags = reader.ReadUInt32();
-
-            string page_name = "";
-            bool page_name_finished = false;
-            while (!page_name_finished)
+            if (!Globals.pd2_stash_formatting)
             {
-                string temp = reader.ReadString(1);
-                page_name += temp;
-                if (String.IsNullOrEmpty(temp)) page_name_finished = true;
+                version = 0x60;
+                //version = 0x5453;
+                //version = 0x3230;
+                page.Header = reader.ReadUInt16();
+                page.Flags = reader.ReadUInt32();
+
+                string page_name = "";
+                bool page_name_finished = false;
+                while (!page_name_finished)
+                {
+                    string temp = reader.ReadString(1);
+                    page_name += temp;
+                    if (String.IsNullOrEmpty(temp)) page_name_finished = true;
+                }
+                page.Name = page_name;
             }
-            page.Name = page_name;
-            if (writeConsole) Console.Write($"{page.Name}");
-            //page.PageItems = new ItemList();
             page.PageItems = ItemList.Read(reader, version);
 
-            if (writeConsole) Console.Write($" ...{page.PageItems.Items.Count} items\r\n");
-            for (int i = 0; i < page.PageItems.Items.Count; i++)
-            {
-                //if (writeConsole) Console.WriteLine($"- {page.PageItems.Items[i].Code} ({page.PageItems.Items[i].Quality})");
-            }
             return page;
         }
 
@@ -50,15 +49,19 @@ namespace D2SLib.Model.Save
         {
             using (BitWriter writer = new BitWriter())
             {
-                writer.WriteUInt16(page.Header ?? 0x5453);
-                writer.WriteUInt32(page.Flags);
-                writer.WriteString(page.Name + '\0', page.Name.Length + 1);
-                // TODO: Simplify further by calling ItemList.Write?
-                writer.WriteString("JM", "JM".Length);
+                if (!Globals.pd2_stash_formatting)
+                {
+                    version = 0x60;
+                    writer.WriteUInt16(page.Header ?? 0x5453);
+                    writer.WriteUInt32(page.Flags);
+                    writer.WriteString(page.Name + '\0', page.Name.Length + 1);
+                    // TODO: Simplify further by calling ItemList.Write?
+                    writer.WriteString("JM", "JM".Length);
+                }
                 writer.WriteUInt16(page.PageItems.Count);
                 for (int i = 0; i < page.PageItems.Count; i++)
                 {
-                    Item.Write(page.PageItems.Items[i], 0x60, writer);
+                    Item.Write(page.PageItems.Items[i], version, writer);
                 }
                 
                 return writer.ToArray();

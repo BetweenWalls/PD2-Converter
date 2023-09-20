@@ -61,20 +61,13 @@ namespace D2SLib.Model.Save
             if (Globals.pd2_char_formatting)
             {
                 Globals.space = reader.ReadBytes(3);    // 3 bytes reserved for new PD2 skills
-
-                if (writeConsole) Console.Write("space: ");
-                foreach (byte b in Globals.space)
-                {
-                    if (writeConsole) Console.Write(Globals.space[b] + " ");
-                }
-                if (writeConsole) Console.Write("\r\n");
             }
 
-            // TODO: this gets called for player items, mercenary items, and also iron golem - change console output?
-
             ItemList itemList = new ItemList();
-            itemList.Header = reader.ReadUInt16();
-            if (writeConsole) Console.WriteLine("PlayerItemList-Header: " + itemList.Header);
+            if (!Globals.pd2_stash_formatting) {
+                itemList.Header = reader.ReadUInt16();
+                if (writeConsole) Console.WriteLine("PlayerItemList-Header: " + itemList.Header);
+            }
             itemList.Count = reader.ReadUInt16();
             if (writeConsole) Console.WriteLine("PlayerItemList-Count: " + itemList.Count);
             if (writeConsole) Console.WriteLine("Items...");
@@ -94,9 +87,12 @@ namespace D2SLib.Model.Save
             {
                 if (Globals.pd2_char_formatting)
                 {
-                    writer.WriteBytes(Globals.space);    // 3 bytes reserved for new PD2 skills
+                    writer.WriteBytes(Globals.space);    // 3 bytes preserved for new PD2 skills
                 }
-                writer.WriteUInt16(itemList.Header ?? (UInt16)0x4D4A);
+                if (!Globals.pd2_stash_formatting)
+                {
+                    writer.WriteUInt16(itemList.Header ?? (UInt16)0x4D4A);
+                }
                 writer.WriteUInt16(itemList.Count);
                 for (int i = 0; i < itemList.Count; i++)
                 {
@@ -437,16 +433,19 @@ namespace D2SLib.Model.Save
                 propertyLists |= (UInt16)(1 << (reader.ReadUInt16(4) + 1));
                 //?
             }
-            if(item.IsPersonalized)
+            if (item.IsPersonalized)
             {
                 item.PlayerName = ReadPlayerName(reader);
                 if (writeConsole) Console.WriteLine("Item-PlayerName: " + item.PlayerName);
             }
-            if(item.Code.Trim() == "tbk" || item.Code.Trim() == "ibk")
-            {
-                item.MagicSuffixIds[0] = reader.ReadByte(5);
-                if (writeConsole) Console.WriteLine("Item-MagicSuffixIds: " + item.MagicSuffixIds);
-            }
+            //if (item.Code != null)        // shouldn't be necessary
+            //{
+                if (item.Code.Trim() == "tbk" || item.Code.Trim() == "ibk")
+                {
+                    item.MagicSuffixIds[0] = reader.ReadByte(5);
+                    //if (writeConsole) Console.WriteLine("Item-MagicSuffixIds: " + item.MagicSuffixIds);
+                }
+            //}
             item.HasRealmData = reader.ReadBit();
             if (writeConsole) Console.WriteLine("Item-HasRealmData: " + item.HasRealmData);
             if (item.HasRealmData)
@@ -462,8 +461,9 @@ namespace D2SLib.Model.Save
             if (writeConsole) Console.WriteLine("isArmor: " + isArmor);
             bool isWeapon = Core.TXT.ItemsTXT.IsWeapon(item.Code);
             if (writeConsole) Console.WriteLine("isWeapon: " + isWeapon);
-            bool isStackable = row["stackable"].ToBool();
-            if (writeConsole) Console.WriteLine("isStackable: " + isStackable);
+            bool isMisc = Core.TXT.ItemsTXT.IsMisc(item.Code);
+            bool isStackable = false;
+            if (isArmor || isWeapon || isMisc) isStackable = row["stackable"].ToBool();
             if (isArmor)
             {
                 //why do i need this cast?
@@ -587,7 +587,9 @@ namespace D2SLib.Model.Save
             TXTRow row = Core.TXT.ItemsTXT.GetByCode(item.Code);
             bool isArmor = Core.TXT.ItemsTXT.IsArmor(item.Code);
             bool isWeapon = Core.TXT.ItemsTXT.IsWeapon(item.Code);
-            bool isStackable = row["stackable"].ToBool();
+            bool isMisc = Core.TXT.ItemsTXT.IsMisc(item.Code);
+            bool isStackable = false;
+            if (isArmor || isWeapon || isMisc) isStackable = row["stackable"].ToBool();
             if (isArmor)
             {
                 writer.WriteUInt16((UInt16)(item.Armor - itemStatCostTXT["armorclass"]["Save Add"].ToUInt16()), 11);
