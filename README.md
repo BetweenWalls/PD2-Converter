@@ -22,9 +22,10 @@ If you want to revert to an older version of PD2 for whatever reason, you can re
 The converter may not work in all cases - if the converter doesn't work for a particular file, you can use the traditional method of reverting to the previous season and dropping whichever items were fundamentally altered after that season. For example, the transition from s6 to s7 saw maps being fundamentally altered to become stackable. If you drop the maps, there's no need to convert anything. If you want to try keeping the maps, transfer them all to another character instead and then use the converter on that character only.
 
 Fundamentally altered items per season:
-* S1: maps, Standard of Heroes
-* S2: maps, any item with Enhanced Damage or Maximum Damage per Level
+* S2: maps, Standard of Heroes
+* S3: maps, any item with +X% Enhanced Damage or +X to Maximum Damage per Character Level
 * S7: maps (including dungeons & arenas)
+* S8: items with +X Open Wounds Damage per Second
 
 The converter may have trouble with:
 * Standard of Heroes (S2 or earlier)
