@@ -187,7 +187,7 @@ namespace D2SLib
                 }
             }
 
-            if (Globals.ladder_files_converted) Console.WriteLine("Files denoted with \"NL*\" were converted from ladder to non-ladder.");
+            if (Globals.ladder_files_converted) Console.WriteLine("Files denoted with \"NL\" were converted from ladder to non-ladder.");
 
             bool found_default = false;
             int num_files = 0;
@@ -218,7 +218,7 @@ namespace D2SLib
                 if (num_files == 0 || (num_files == 1 && found_default)) Console.WriteLine($"No files found.\r\nPlace files in {Globals.INPUT_DIR}");
                 if (Globals.files_converted > 0) Console.WriteLine($"Converted files were saved in {Globals.OUTPUT_DIR.Substring(Globals.PROJECT_DIRECTORY.Length, Globals.OUTPUT_DIR.Length - Globals.PROJECT_DIRECTORY.Length - 1)}");
                 if (Globals.files_ignored > 0 && Globals.force_convert_from != "") Console.WriteLine($"Some files could not be converted. (all files were assumed to be from S{Globals.force_convert_from.Substring(Globals.force_convert_from.Length - 1)})");
-                else if (Globals.files_ignored > 0 && Globals.force_convert_from == "") Console.WriteLine("Some files could not be converted. Consider leaving feedback.");
+                else if (Globals.files_ignored > 0 && Globals.force_convert_from == "") Console.WriteLine("Some files could not be converted.");
             }
 
             Console.Write("Press enter to close.");
@@ -270,6 +270,7 @@ namespace D2SLib
                 }
                 catch
                 {
+                    Console.Write("1");
                     Globals.pd2_char_formatting = true;
                     Globals.convert_from = "pd2_s1";
                     Core.TXT = Globals.txt_pd2_s1;
@@ -279,6 +280,7 @@ namespace D2SLib
                     }
                     catch
                     {
+                        Console.Write("2");
                         Globals.convert_from = "pd2_s2";
                         Core.TXT = Globals.txt_pd2_s2;
                         try
@@ -287,6 +289,7 @@ namespace D2SLib
                         }
                         catch
                         {
+                            Console.Write("3");
                             Globals.convert_from = "pd2_s3";
                             Core.TXT = Globals.txt_pd2_s3;
                             try
@@ -295,6 +298,7 @@ namespace D2SLib
                             }
                             catch
                             {
+                                Console.Write("4");
                                 Globals.convert_from = "pd2_s4";
                                 Core.TXT = Globals.txt_pd2_s4;
                                 try
@@ -303,6 +307,7 @@ namespace D2SLib
                                 }
                                 catch
                                 {
+                                    Console.Write("5");
                                     Globals.convert_from = "pd2_s5";
                                     Core.TXT = Globals.txt_pd2_s5;
                                     try
@@ -311,6 +316,7 @@ namespace D2SLib
                                     }
                                     catch
                                     {
+                                        Console.Write("6");
                                         Globals.convert_from = "pd2_s6";
                                         Core.TXT = Globals.txt_pd2_s6;
                                         try
@@ -319,6 +325,7 @@ namespace D2SLib
                                         }
                                         catch
                                         {
+                                            Console.Write("7");
                                             Globals.convert_from = "pd2_s7";
                                             Core.TXT = Globals.txt_pd2_s7;
                                             try
@@ -327,6 +334,7 @@ namespace D2SLib
                                             }
                                             catch
                                             {
+                                                Console.Write("8");
                                                 Globals.convert_from = "pd2_s8";
                                                 Core.TXT = Globals.txt_pd2_s8;
                                                 try
@@ -375,22 +383,58 @@ namespace D2SLib
                 }
                 else Core.TXT = Globals.txt_pd2_s8;     // attempts to convert to most recent version
 
+                bool write_success = true;
                 try
                 {
                     File.WriteAllBytes(Globals.OUTPUT_DIR + input_name + Globals.CFE, Core.WriteD2S(character));    // TODO: This can't convert non-vanilla items/affixes back to vanilla - maybe it should try removing them?
-                    Console.Write("saved");
-                    Globals.files_converted += 1;
-                    if (was_ladder)
-                    {
-                        Console.Write(" NL*");
-                        Globals.ladder_files_converted = true;
-                    }
-                    Console.Write("\r\n");
                 }
                 catch
                 {
-                    Console.Write("couldn't save\r\n");
+                    write_success = false;
+                    Console.Write("couldn't write file\r\n");
                     Globals.files_ignored += 1;
+                }
+                if (write_success)
+                {
+                    // setup to verify file integrity
+                    bool reread_success = true;
+                    if (Globals.convert_from != "vanilla")
+                    {
+                        Globals.convert_from = "pd2_s8";
+                        Core.TXT = Globals.txt_pd2_s8;
+                    }
+                    else
+                    {
+                        Globals.convert_from = "vanilla";
+                        Core.TXT = Globals.txt_vanilla;
+                    }
+                    try
+                    {
+                        // attempt to read converted file to verify integrity
+                        Globals.convert_from = "pd2_s8";
+                        Core.TXT = Globals.txt_pd2_s8;
+                        character = Core.ReadD2S(File.ReadAllBytes(Globals.OUTPUT_DIR + input_name + Globals.CFE));
+                    }
+                    catch
+                    {
+                        reread_success = false;
+                        Console.Write("couldn't save\r\n");
+                    }
+                    if (reread_success)
+                    {
+                        Console.Write("saved");
+                        Globals.files_converted += 1;
+                        if (was_ladder)
+                        {
+                            Console.Write(" NL");
+                            Globals.ladder_files_converted = true;
+                        }
+                        Console.Write("\r\n");
+                    }
+                    else
+                    {
+                        File.Delete(Globals.OUTPUT_DIR + input_name + Globals.CFE);
+                    }
                 }
             }
             else
@@ -406,10 +450,10 @@ namespace D2SLib
             // TODO: Reimplement try-catch blocks via a less hardcoded method to reduce the number of lines it takes to accomplish the same thing
             Console.Write($"Reading {stash_name}... ");
 
-            D2I stash = new D2I();
-            UInt16 stash_version = 0x3230;
             Globals.pd2_char_formatting = false;
             Globals.pd2_stash_formatting = false;
+            D2I stash = new D2I();
+            UInt16 stash_version = 0x3230;
             if (type == ".stash" || type == ".stash.hc") Globals.pd2_stash_formatting = true;
 
             if (Globals.force_convert_from != "")
@@ -523,17 +567,53 @@ namespace D2SLib
             {
                 Console.Write($"[{Globals.convert_from}]... ");
                 Core.TXT = Globals.txt_pd2_s8;     // attempts to convert to most recent version   ...TODO: Why isn't this specified for non-vanilla conversions only like the equivalent line in the ConvertCharacter() function? Did I never enable ConvertStash() to convert PD2 stash files to vanilla stash files?
+                
+                bool write_success = true;
                 try
                 {
                     File.WriteAllBytes(Globals.OUTPUT_DIR + stash_name, Core.WriteD2I(stash, stash_version, type));
-                    Console.Write("saved\r\n");
-                    Globals.files_converted += 1;
                 }
                 catch
                 {
-                    Console.Write("couldn't save\r\n");
+                    write_success = false;
+                    Console.Write("couldn't write file\r\n");
                     Globals.files_ignored += 1;
                 }
+                if (write_success)
+                {
+                    // setup to verify file integrity
+                    bool reread_success = true;
+                    if (Globals.convert_from != "vanilla")
+                    {
+                        Globals.convert_from = "pd2_s8";
+                        Core.TXT = Globals.txt_pd2_s8;
+                    }
+                    else
+                    {
+                        Globals.convert_from = "vanilla";
+                        Core.TXT = Globals.txt_vanilla;
+                    }
+                    try
+                    {
+                        // attempt to read converted file to verify integrity
+                        stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                    }
+                    catch
+                    {
+                        reread_success = false;
+                        Console.Write("couldn't save\r\n");
+                    }
+                    if (reread_success)
+                    {
+                        Console.Write("saved\r\n");
+                        Globals.files_converted += 1;
+                    }
+                    else
+                    {
+                        File.Delete(Globals.OUTPUT_DIR + stash_name + type);
+                    }
+                }
+
             }
             else
             {

@@ -438,9 +438,13 @@ namespace D2SLib.Model.Save
                 item.PlayerName = ReadPlayerName(reader);
                 if (writeConsole) Console.WriteLine("Item-PlayerName: " + item.PlayerName);
             }
+            if (item.Code == null)
+            {
+                throw new Exception();
+            }
             //if (item.Code != null)        // shouldn't be necessary
             //{
-                if (item.Code.Trim() == "tbk" || item.Code.Trim() == "ibk")
+            if (item.Code.Trim() == "tbk" || item.Code.Trim() == "ibk")
                 {
                     item.MagicSuffixIds[0] = reader.ReadByte(5);
                     //if (writeConsole) Console.WriteLine("Item-MagicSuffixIds: " + item.MagicSuffixIds);

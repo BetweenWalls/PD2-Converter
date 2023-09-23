@@ -39,8 +39,11 @@ namespace D2SLib.Model.TXT
             //Console.WriteLine(value);
             foreach(var row in Rows)
             {
-                if (row[name].Value.Trim() == value.Trim())
-                    return row;
+                //if (row[name].Value != null)        // shouldn't be necessary
+                //{
+                    if (row[name].Value.Trim() == value.Trim())
+                        return row;
+                //}
             }
             return null;
         }
