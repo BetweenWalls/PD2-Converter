@@ -410,7 +410,6 @@ namespace D2SLib
                     catch
                     {
                         reread_success = false;
-                        Console.Write("couldn't save\r\n");
                     }
                     if (reread_success)
                     {
@@ -425,6 +424,7 @@ namespace D2SLib
                     }
                     else
                     {
+                        Console.Write("couldn't save\r\n");
                         File.Delete(Globals.OUTPUT_DIR + input_name + Globals.CFE);
                     }
                 }
@@ -593,7 +593,6 @@ namespace D2SLib
                     catch
                     {
                         reread_success = false;
-                        Console.Write("couldn't save\r\n");
                     }
                     if (reread_success)
                     {
@@ -602,7 +601,8 @@ namespace D2SLib
                     }
                     else
                     {
-                        File.Delete(Globals.OUTPUT_DIR + stash_name + type);
+                        Console.Write("couldn't save\r\n");
+                        File.Delete(Globals.OUTPUT_DIR + stash_name);
                     }
                 }
 
