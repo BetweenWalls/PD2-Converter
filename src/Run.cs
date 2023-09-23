@@ -270,7 +270,6 @@ namespace D2SLib
                 }
                 catch
                 {
-                    Console.Write("1");
                     Globals.pd2_char_formatting = true;
                     Globals.convert_from = "pd2_s1";
                     Core.TXT = Globals.txt_pd2_s1;
@@ -280,7 +279,6 @@ namespace D2SLib
                     }
                     catch
                     {
-                        Console.Write("2");
                         Globals.convert_from = "pd2_s2";
                         Core.TXT = Globals.txt_pd2_s2;
                         try
@@ -289,7 +287,6 @@ namespace D2SLib
                         }
                         catch
                         {
-                            Console.Write("3");
                             Globals.convert_from = "pd2_s3";
                             Core.TXT = Globals.txt_pd2_s3;
                             try
@@ -298,7 +295,6 @@ namespace D2SLib
                             }
                             catch
                             {
-                                Console.Write("4");
                                 Globals.convert_from = "pd2_s4";
                                 Core.TXT = Globals.txt_pd2_s4;
                                 try
@@ -307,7 +303,6 @@ namespace D2SLib
                                 }
                                 catch
                                 {
-                                    Console.Write("5");
                                     Globals.convert_from = "pd2_s5";
                                     Core.TXT = Globals.txt_pd2_s5;
                                     try
@@ -316,7 +311,6 @@ namespace D2SLib
                                     }
                                     catch
                                     {
-                                        Console.Write("6");
                                         Globals.convert_from = "pd2_s6";
                                         Core.TXT = Globals.txt_pd2_s6;
                                         try
@@ -325,7 +319,6 @@ namespace D2SLib
                                         }
                                         catch
                                         {
-                                            Console.Write("7");
                                             Globals.convert_from = "pd2_s7";
                                             Core.TXT = Globals.txt_pd2_s7;
                                             try
@@ -334,7 +327,6 @@ namespace D2SLib
                                             }
                                             catch
                                             {
-                                                Console.Write("8");
                                                 Globals.convert_from = "pd2_s8";
                                                 Core.TXT = Globals.txt_pd2_s8;
                                                 try
