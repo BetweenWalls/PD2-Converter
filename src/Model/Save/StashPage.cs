@@ -24,12 +24,8 @@ namespace D2SLib.Model.Save
             Boolean writeConsole = D2SLib.Globals.writeConsole_Stash;
             if (!Globals.pd2_stash_formatting)
             {
-                version = 0x60;
-                //version = 0x5453;
-                //version = 0x3230;
                 page.Header = reader.ReadUInt16();
                 page.Flags = reader.ReadUInt32();
-
                 string page_name = "";
                 bool page_name_finished = false;
                 while (!page_name_finished)
@@ -51,11 +47,9 @@ namespace D2SLib.Model.Save
             {
                 if (!Globals.pd2_stash_formatting)
                 {
-                    version = 0x60;
                     writer.WriteUInt16(page.Header ?? 0x5453);
                     writer.WriteUInt32(page.Flags);
                     writer.WriteString(page.Name + '\0', page.Name.Length + 1);
-                    // TODO: Simplify further by calling ItemList.Write?
                     writer.WriteString("JM", "JM".Length);
                 }
                 writer.WriteUInt16(page.PageItems.Count);

@@ -217,8 +217,7 @@ namespace D2SLib
                 Console.WriteLine();
                 if (num_files == 0 || (num_files == 1 && found_default)) Console.WriteLine($"No files found.\r\nPlace files in {Globals.INPUT_DIR}");
                 if (Globals.files_converted > 0) Console.WriteLine($"Converted files were saved in {Globals.OUTPUT_DIR.Substring(Globals.PROJECT_DIRECTORY.Length, Globals.OUTPUT_DIR.Length - Globals.PROJECT_DIRECTORY.Length - 1)}");
-                if (Globals.files_ignored > 0 && Globals.force_convert_from != "") Console.WriteLine($"Some files could not be converted. (all files were assumed to be from S{Globals.force_convert_from.Substring(Globals.force_convert_from.Length - 1)})");
-                else if (Globals.files_ignored > 0 && Globals.force_convert_from == "") Console.WriteLine("Some files could not be converted.");
+                if (Globals.files_ignored > 0) Console.WriteLine("Some files could not be converted.");
             }
 
             Console.Write("Press enter to close.");
@@ -444,9 +443,9 @@ namespace D2SLib
 
             Globals.pd2_char_formatting = false;
             Globals.pd2_stash_formatting = false;
-            D2I stash = new D2I();
-            UInt16 stash_version = 0x3230;
             if (type == ".stash" || type == ".stash.hc") Globals.pd2_stash_formatting = true;
+            D2I stash = new D2I();
+            UInt16 version = 0x60;
 
             if (Globals.force_convert_from != "")
             {
@@ -461,7 +460,7 @@ namespace D2SLib
                 else if (Globals.convert_from == "pd2_s8") Core.TXT = Globals.txt_pd2_s8;
                 try
                 {
-                    stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                    stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, version, type);
                 }
                 catch
                 {
@@ -475,7 +474,7 @@ namespace D2SLib
                 Core.TXT = Globals.txt_vanilla;
                 try
                 {
-                    stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                    stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, version, type);
                 }
                 catch
                 {
@@ -483,7 +482,7 @@ namespace D2SLib
                     Core.TXT = Globals.txt_pd2_s1;
                     try
                     {
-                        stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                        stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, version, type);
                     }
                     catch
                     {
@@ -491,7 +490,7 @@ namespace D2SLib
                         Core.TXT = Globals.txt_pd2_s2;
                         try
                         {
-                            stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                            stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, version, type);
                         }
                         catch
                         {
@@ -499,7 +498,7 @@ namespace D2SLib
                             Core.TXT = Globals.txt_pd2_s3;
                             try
                             {
-                                stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                                stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, version, type);
                             }
                             catch
                             {
@@ -507,7 +506,7 @@ namespace D2SLib
                                 Core.TXT = Globals.txt_pd2_s4;
                                 try
                                 {
-                                    stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                                    stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, version, type);
                                 }
                                 catch
                                 {
@@ -515,7 +514,7 @@ namespace D2SLib
                                     Core.TXT = Globals.txt_pd2_s5;
                                     try
                                     {
-                                        stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                                        stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, version, type);
                                     }
                                     catch
                                     {
@@ -523,7 +522,7 @@ namespace D2SLib
                                         Core.TXT = Globals.txt_pd2_s6;
                                         try
                                         {
-                                            stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                                            stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, version, type);
                                         }
                                         catch
                                         {
@@ -531,7 +530,7 @@ namespace D2SLib
                                             Core.TXT = Globals.txt_pd2_s7;
                                             try
                                             {
-                                                stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                                                stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, version, type);
                                             }
                                             catch
                                             {
@@ -539,7 +538,7 @@ namespace D2SLib
                                                 Core.TXT = Globals.txt_pd2_s8;
                                                 try
                                                 {
-                                                    stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                                                    stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, version, type);
                                                 }
                                                 catch
                                                 {
@@ -563,7 +562,7 @@ namespace D2SLib
                 bool write_success = true;
                 try
                 {
-                    File.WriteAllBytes(Globals.OUTPUT_DIR + stash_name, Core.WriteD2I(stash, stash_version, type));
+                    File.WriteAllBytes(Globals.OUTPUT_DIR + stash_name, Core.WriteD2I(stash, version, type));
                 }
                 catch
                 {
@@ -588,7 +587,7 @@ namespace D2SLib
                     try
                     {
                         // attempt to read converted file to verify integrity
-                        stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, stash_version, type);
+                        stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, version, type);
                     }
                     catch
                     {
