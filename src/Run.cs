@@ -33,7 +33,7 @@ namespace D2SLib
         public static string convert_to = "pd2";
         public static string force_convert_from = "";
         public static bool pd2_char_formatting = false;
-        public static bool pd2_stash_formatting = false;          // flag for .stash an .stash.hc files
+        public static bool pd2_stash_formatting = false;          // flag for .stash and .stash.hc files
         public static bool ladder_files_converted = false;
         public static int files_converted = 0;
         public static int files_ignored = 0;
@@ -382,7 +382,7 @@ namespace D2SLib
                 catch
                 {
                     write_success = false;
-                    Console.Write("couldn't write file\r\n");
+                    Console.Write(" couldn't write file\r\n");
                     Globals.files_ignored += 1;
                 }
                 if (write_success)
@@ -412,7 +412,7 @@ namespace D2SLib
                     }
                     if (reread_success)
                     {
-                        Console.Write("saved");
+                        Console.Write(" saved");
                         Globals.files_converted += 1;
                         if (was_ladder)
                         {
@@ -423,14 +423,14 @@ namespace D2SLib
                     }
                     else
                     {
-                        Console.Write("couldn't save\r\n");
+                        Console.Write(" couldn't save\r\n");
                         File.Delete(Globals.OUTPUT_DIR + input_name + Globals.CFE);
                     }
                 }
             }
             else
             {
-                Console.Write("ignored (unknown file format)\r\n");
+                Console.Write(" ignored (unknown file format)\r\n");
                 Globals.files_ignored += 1;
             }
 
@@ -567,7 +567,7 @@ namespace D2SLib
                 catch
                 {
                     write_success = false;
-                    Console.Write("couldn't write file\r\n");
+                    Console.Write(" couldn't write file\r\n");
                     Globals.files_ignored += 1;
                 }
                 if (write_success)
@@ -595,12 +595,12 @@ namespace D2SLib
                     }
                     if (reread_success)
                     {
-                        Console.Write("saved\r\n");
+                        Console.Write(" saved\r\n");
                         Globals.files_converted += 1;
                     }
                     else
                     {
-                        Console.Write("couldn't save\r\n");
+                        Console.Write(" couldn't save\r\n");
                         File.Delete(Globals.OUTPUT_DIR + stash_name);
                     }
                 }
@@ -608,7 +608,7 @@ namespace D2SLib
             }
             else
             {
-                Console.Write("ignored (unknown file format)\r\n");
+                Console.Write(" ignored (unknown file format)\r\n");
                 Globals.files_ignored += 1;
             }
         }

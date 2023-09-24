@@ -30,11 +30,6 @@ namespace D2SLib.Model.Save
                 D2I d2i = new D2I();
                 if (type == ".stash" || type == ".stash.hc")
                 {
-                    //d2i.PageList[0] = new StashPage();
-                    //d2i.PageList[0] = StashPage.Read(d2i.PageList[0], reader, version);
-
-                    //d2i.ItemCount = reader.ReadUInt16();
-                    // JM?
                     d2i.StashItems = ItemList.Read(reader, version);
                 }
                 else
@@ -47,7 +42,6 @@ namespace D2SLib.Model.Save
                     if (writeConsole) Console.WriteLine($"Gold: {d2i.Gold}");
                     d2i.Pages = reader.ReadUInt32();
                     if (writeConsole) Console.WriteLine($"Pages: {d2i.Pages}");
-                    // JM?
                     d2i.PageList = new StashPage[d2i.Pages];
                     for (int p = 0; p < d2i.PageList.Length; p++)
                     {
@@ -66,9 +60,7 @@ namespace D2SLib.Model.Save
             {
                 if (type == ".stash" || type == ".stash.hc")
                 {
-                    //writer.WriteBytes(StashPage.Write(d2i.PageList[0], version));
                     writer.WriteUInt16(d2i.StashItems.Count);
-                    writer.WriteString("JM", "JM".Length);
                     for (int i = 0; i < d2i.StashItems.Count; i++)
                     {
                         Item.Write(d2i.StashItems.Items[i], version, writer);

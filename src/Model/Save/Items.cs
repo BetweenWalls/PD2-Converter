@@ -66,7 +66,6 @@ namespace D2SLib.Model.Save
             ItemList itemList = new ItemList();
             if (!Globals.pd2_stash_formatting) {
                 itemList.Header = reader.ReadUInt16();  // online pd2 stashes don't use header
-                //if (writeConsole) Console.WriteLine("ItemList-Header: " + itemList.Header);
             }
             itemList.Count = reader.ReadUInt16();
             if (writeConsole) Console.Write(itemList.Count + " items... ===================================\r\n");
@@ -74,7 +73,6 @@ namespace D2SLib.Model.Save
             {
                 if (writeConsole) Console.WriteLine("Item-" + i + "... ");
                 itemList.Items.Add(Item.Read(reader, version));
-                //if (itemList.Items[i].Quantity > 0) { if (writeConsole) Console.WriteLine("Item-Quantity: " + itemList.Items[i].Quantity); }
                 if (itemList.Items[i].Quantity == 0) { itemList.Items[i].Quantity = 1; }
                 if (writeConsole) Console.WriteLine("Item-" + i + " __________________");
             }
@@ -400,13 +398,13 @@ namespace D2SLib.Model.Save
             }
             if (item.Code == null)
             {
-                Console.Write(" ! ");
+                Console.Write("!");
                 throw new Exception();  // invalid item data
             }
 
             if (item.Code.Contains("?"))        // TODO: Check characters? Should only contain alphanumeric characters
             {
-                Console.Write(" ! ");
+                Console.Write("!");
                 throw new Exception();  // invalid item data
             }
             if (item.Code.Trim() == "tbk" || item.Code.Trim() == "ibk")
