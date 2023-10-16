@@ -398,14 +398,14 @@ namespace D2SLib.Model.Save
             }
             if (item.Code == null)
             {
-                Console.Write("!");
-                throw new Exception();  // invalid item data
+                //Console.Write("!");
+                throw new Exception("Item.Code is null");  // invalid item data
             }
 
             if (item.Code.Contains("?"))        // TODO: Check characters? Should only contain alphanumeric characters
             {
-                Console.Write("!");
-                throw new Exception();  // invalid item data
+                //Console.Write("!");
+                throw new Exception("Item.Code contains invalid characters");  // invalid item data
             }
             if (item.Code.Trim() == "tbk" || item.Code.Trim() == "ibk")
                 {
