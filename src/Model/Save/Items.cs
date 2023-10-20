@@ -50,7 +50,7 @@ namespace D2SLib.Model.Save
 
     public class ItemList
     {
-        public UInt16? Header { get; set; }
+        public UInt16 Header { get; set; }
         public UInt16 Count { get; set; }
         public List<Item> Items { get; set; } = new List<Item>();
 
@@ -87,9 +87,9 @@ namespace D2SLib.Model.Save
                 {
                     writer.WriteBytes(Globals.space);    // 3 bytes preserved for new PD2 skills
                 }
-                if (version <= 0x60 && !Globals.pd2_stash_formatting)
+                if (!Globals.pd2_stash_formatting)
                 {
-                    writer.WriteUInt16(itemList.Header ?? (UInt16)0x4D4A);  // D2 LoD, online pd2 stashes don't use header
+                    writer.WriteUInt16(itemList.Header);  // D2 LoD, online pd2 stashes don't use header
                 }
                 writer.WriteUInt16(itemList.Count);
                 for (int i = 0; i < itemList.Count; i++)
@@ -112,7 +112,7 @@ namespace D2SLib.Model.Save
         public ItemLocation Location { get; set; }
         public byte X { get; set; }
         public byte Y { get; set; }
-        public byte Page { get; set; }  // is this PlugY-only?
+        public byte Page { get; set; }
         public byte EarLevel { get; set; }
         public string PlayerName { get; set; }  //used for personalized or ears
         public string Code { get; set; }
@@ -182,7 +182,7 @@ namespace D2SLib.Model.Save
         {
             using (BitWriter writer = new BitWriter())
             {
-                writer.WriteUInt16(item.Header ?? (UInt16)0x4D4A);
+                if (version <= 0x60) writer.WriteUInt16(item.Header ?? (UInt16)0x4D4A);
                 WriteCompact(writer, item, version);
                 if (!item.IsCompact) WriteComplete(writer, item, version);
                 writer.Align();
@@ -196,7 +196,7 @@ namespace D2SLib.Model.Save
         
         public static byte[] Write(Item item, UInt32 version, BitWriter writer) // added for PD2 conversion
         {
-            writer.WriteUInt16(item.Header ?? (UInt16)0x4D4A);
+            if (version <= 0x60) writer.WriteUInt16(item.Header ?? (UInt16)0x4D4A);
             WriteCompact(writer, item, version);
             if (!item.IsCompact) WriteComplete(writer, item, version);
             writer.Align();

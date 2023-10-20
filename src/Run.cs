@@ -389,7 +389,7 @@ namespace D2SLib
                 {
                     // setup to verify file integrity
                     bool reread_success = true;
-                    if (Globals.convert_from != "vanilla")
+                    if (Globals.convert_to != "vanilla")
                     {
                         Globals.convert_from = "pd2_s8";
                         Core.TXT = Globals.txt_pd2_s8;
@@ -402,8 +402,6 @@ namespace D2SLib
                     try
                     {
                         // attempt to read converted file to verify integrity
-                        Globals.convert_from = "pd2_s8";
-                        Core.TXT = Globals.txt_pd2_s8;
                         character = Core.ReadD2S(File.ReadAllBytes(Globals.OUTPUT_DIR + input_name + Globals.CFE));
                     }
                     catch
@@ -574,7 +572,7 @@ namespace D2SLib
                 {
                     // setup to verify file integrity
                     bool reread_success = true;
-                    if (Globals.convert_from != "vanilla")
+                    if (Globals.convert_to != "vanilla")
                     {
                         Globals.convert_from = "pd2_s8";
                         Core.TXT = Globals.txt_pd2_s8;
@@ -587,7 +585,7 @@ namespace D2SLib
                     try
                     {
                         // attempt to read converted file to verify integrity
-                        stash = Core.ReadD2I(Globals.INPUT_DIR + stash_name, version, type);
+                        stash = Core.ReadD2I(Globals.OUTPUT_DIR + stash_name, version, type);
                     }
                     catch
                     {
@@ -604,7 +602,6 @@ namespace D2SLib
                         File.Delete(Globals.OUTPUT_DIR + stash_name);
                     }
                 }
-
             }
             else
             {
